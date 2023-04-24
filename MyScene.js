@@ -8,8 +8,7 @@ import { Stats } from '../libs/stats.module.js'
 
 // Clases de mi proyecto
 
-import { MyBox } from './ejercicio_2_box.js'
-import { Cone } from './ejercicio_2_cone.js'
+import { Estructura } from './p2_estructura.js'
  
 /// La clase fachada del modelo
 /**
@@ -37,48 +36,15 @@ class MyScene extends THREE.Scene {
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
     
-    // Un suelo 
-    //this.createGround ();
+     
+    this.createGround ();
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
-    this.axis = new THREE.AxesHelper (5);
-    this.axis.translateX(10)
-    this.add (this.axis);
-
-    this.axis = new THREE.AxesHelper (5);
-    this.axis.translateZ(10)
-    this.add (this.axis);
-
-    this.axis = new THREE.AxesHelper (5);
-    this.axis.translateY(10);
-    this.axis.translateX(10);
-    this.add (this.axis);
-
-    this.axis = new THREE.AxesHelper (5);
-    this.axis.translateY(10);
-    this.axis.translateZ(10);
-    this.add (this.axis);
-
-    this.axis = new THREE.AxesHelper (5);
-    this.axis.translateY(10);
-    this.add (this.axis);
-
-    this.axis = new THREE.AxesHelper (5);
-    this.axis.translateX(10);
-    this.axis.translateZ(10);
-    this.add (this.axis);
 
     this.axis = new THREE.AxesHelper(5);
     this.add (this.axis);
     
     
-    // Por último creamos el modelo.
-    // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
-    // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.box = new MyBox(this.gui, "Controles de la Caja");
-    this.add (this.box);
-    this.cono = new Cone(this.gui, "Controles de el Cono");
-    this.add (this.cono);
   }
   
   initStats() {
@@ -119,7 +85,7 @@ class MyScene extends THREE.Scene {
     // Debe orbitar con respecto al punto de mira de la cámara
     this.cameraControl.target = look;
   }
-  /*
+  
   createGround () {
     // El suelo es un Mesh, necesita una geometría y un material.
     
@@ -139,7 +105,7 @@ class MyScene extends THREE.Scene {
     
     // Que no se nos olvide añadirlo a la escena, que en este caso es  this
     this.add (ground);
-  }*/
+  }
   
   createGUI () {
     // Se crea la interfaz gráfica de usuario
@@ -246,9 +212,7 @@ class MyScene extends THREE.Scene {
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
     
-    // Se actualiza el resto del modelo
-    this.box.update();
-    this.cono.update();
+   
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());

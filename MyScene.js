@@ -44,6 +44,8 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper(5);
     this.add (this.axis);
     
+    this.muro = new Estructura();
+    this.add(this.muro);
     
   }
   
@@ -70,9 +72,11 @@ class MyScene extends THREE.Scene {
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set (20, 10, 20);
+    this.camera.position.set (-220, 230, 220);
+    this.camera.fov = 90;
+    this.camera.updateProjectionMatrix();
     // Y hacia dónde mira
-    var look = new THREE.Vector3 (0,0,0);
+    var look = new THREE.Vector3 (0,150,0);
     this.camera.lookAt(look);
     this.add (this.camera);
     
@@ -90,7 +94,7 @@ class MyScene extends THREE.Scene {
     // El suelo es un Mesh, necesita una geometría y un material.
     
     // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (500,0.2,500);
+    var geometryGround = new THREE.BoxGeometry (520,0.2,520);
     
     // El material se hará con una textura de madera
     var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
@@ -149,8 +153,8 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.spotLight = new THREE.SpotLight( 0xffffff, this.guiControls.lightIntensity );
-    this.spotLight.position.set( 60, 60, 40 );
+    this.spotLight = new THREE.PointLight( 0xffffff, this.guiControls.lightIntensity, 1000, 2 );
+    this.spotLight.position.set( 0, 300, 0 );
     this.add (this.spotLight);
   }
   

@@ -5,6 +5,7 @@ import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
+import { FirstPersonControls } from '../libs/FirstPersonControls.js'
 
 // Clases de mi proyecto
 
@@ -72,29 +73,27 @@ class MyScene extends THREE.Scene {
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set (-220, 230, 220);
+    this.camera.position.set (0, 160, 0);
     this.camera.fov = 90;
     this.camera.updateProjectionMatrix();
     // Y hacia dónde mira
-    var look = new THREE.Vector3 (0,150,0);
+    var look = new THREE.Vector3 (100,150,0);
     this.camera.lookAt(look);
     this.add (this.camera);
     
     // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-    this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
+    this.cameraControl = new FirstPersonControls(this.camera, this.renderer.domElement);
     // Se configuran las velocidades de los movimientos
-    this.cameraControl.rotateSpeed = 5;
-    this.cameraControl.zoomSpeed = -2;
-    this.cameraControl.panSpeed = 0.5;
+    this.cameraControllookSpeed = 1;
+    this.cameraControl.movementSpeed = 8;
     // Debe orbitar con respecto al punto de mira de la cámara
-    this.cameraControl.target = look;
   }
   
   createGround () {
     // El suelo es un Mesh, necesita una geometría y un material.
     
     // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (520,0.2,520);
+    var geometryGround = new THREE.BoxGeometry (1000,0.2,1000);
     
     // El material se hará con una textura de madera
     var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
@@ -121,7 +120,8 @@ class MyScene extends THREE.Scene {
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
       lightIntensity : 0.5,
-      axisOnOff : true
+      axisOnOff : true,
+      pause : true
     }
 
     // Se crea una sección para los controles de esta clase
@@ -136,8 +136,12 @@ class MyScene extends THREE.Scene {
     folder.add (this.guiControls, 'axisOnOff')
       .name ('Mostrar ejes : ')
       .onChange ( (value) => this.setAxisVisible (value) );
-    
-    return gui;
+      
+      folder.add (this.guiControls, 'pause')
+      .name ('Pausar:  ')
+      .onChange ( (value) => this.cameraControl.enabled = value );
+  
+  return gui;
   }
   
   createLights () {
@@ -203,6 +207,7 @@ class MyScene extends THREE.Scene {
     // Hay que actualizar el ratio de aspecto de la cámara
     this.setCameraAspect (window.innerWidth / window.innerHeight);
     
+    this.cameraControl.handleResize();
     // Y también el tamaño del renderizador
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
@@ -214,8 +219,7 @@ class MyScene extends THREE.Scene {
     // Se actualizan los elementos de la escena para cada frame
     
     // Se actualiza la posición de la cámara según su controlador
-    this.cameraControl.update();
-    
+    this.cameraControl.update(0.5);
    
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"

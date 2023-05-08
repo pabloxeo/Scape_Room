@@ -10,7 +10,9 @@ import { FirstPersonControls } from '../libs/FirstPersonControls.js'
 // Clases de mi proyecto
 
 import { Estructura } from './p2_estructura.js'
- 
+import { Cama } from './cama.js'
+import { Ventilador } from './ventilador.js'
+
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
@@ -47,6 +49,13 @@ class MyScene extends THREE.Scene {
     
     this.muro = new Estructura();
     this.add(this.muro);
+
+    this.cama = new Cama();
+    this.add(this.cama);
+    
+
+    this.ventilador = new Ventilador();
+    this.add(this.ventilador);
     
   }
   
@@ -73,7 +82,7 @@ class MyScene extends THREE.Scene {
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set (0, 160, 0);
+    this.camera.position.set (0, 200, 0);
     this.camera.fov = 90;
     this.camera.updateProjectionMatrix();
     // Y hacia dónde mira
@@ -93,10 +102,10 @@ class MyScene extends THREE.Scene {
     // El suelo es un Mesh, necesita una geometría y un material.
     
     // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (1000,0.2,1000);
+    var geometryGround = new THREE.BoxGeometry (1020,0.2,1020);
     
     // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
+    var texture = new THREE.TextureLoader().load('../imgs/suelo.jpg');
     var materialGround = new THREE.MeshPhongMaterial ({map: texture});
     
     // Ya se puede construir el Mesh
@@ -158,7 +167,7 @@ class MyScene extends THREE.Scene {
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
     this.spotLight = new THREE.PointLight( 0xffffff, this.guiControls.lightIntensity, 1000, 2 );
-    this.spotLight.position.set( 0, 300, 0 );
+    this.spotLight.position.set( 0, 450, 0 );
     this.add (this.spotLight);
   }
   

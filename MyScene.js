@@ -5,7 +5,7 @@ import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
-import { FirstPersonControls } from '../libs/FirstPersonControls.js'
+import { PointerLockControls } from '../libs/PointerLockControls.js'
 
 // Clases de mi proyecto
 
@@ -91,10 +91,8 @@ class MyScene extends THREE.Scene {
     this.add (this.camera);
     
     // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-    this.cameraControl = new FirstPersonControls(this.camera, this.renderer.domElement);
+    this.cameraControl = new PointerLockControls(this.camera, this.renderer.domElement);
     // Se configuran las velocidades de los movimientos
-    this.cameraControllookSpeed = 1;
-    this.cameraControl.movementSpeed = 8;
     // Debe orbitar con respecto al punto de mira de la cámara
   }
   
@@ -145,10 +143,7 @@ class MyScene extends THREE.Scene {
     folder.add (this.guiControls, 'axisOnOff')
       .name ('Mostrar ejes : ')
       .onChange ( (value) => this.setAxisVisible (value) );
-      
-      folder.add (this.guiControls, 'pause')
-      .name ('Pausar:  ')
-      .onChange ( (value) => this.cameraControl.enabled = value );
+  
   
   return gui;
   }
@@ -216,7 +211,6 @@ class MyScene extends THREE.Scene {
     // Hay que actualizar el ratio de aspecto de la cámara
     this.setCameraAspect (window.innerWidth / window.innerHeight);
     
-    this.cameraControl.handleResize();
     // Y también el tamaño del renderizador
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
@@ -225,13 +219,10 @@ class MyScene extends THREE.Scene {
     
     if (this.stats) this.stats.update();
     
-    // Se actualizan los elementos de la escena para cada frame
-    
-    // Se actualiza la posición de la cámara según su controlador
-    this.cameraControl.update(0.5);
+    this.cameraControl.lock();
    
     
-    // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
+     //Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
 
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.

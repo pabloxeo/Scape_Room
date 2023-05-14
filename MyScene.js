@@ -12,7 +12,11 @@ import { PointerLockControls } from '../libs/PointerLockControls.js'
 import { Estructura } from './p2_estructura.js'
 import { Cama } from './cama.js'
 import { Ventilador } from './ventilador.js'
-
+import { Ventana } from './ventana.js'
+import { Train } from './train.js'
+import { Aspas } from './aspas.js'
+import { Armario } from './armario.js'
+import { Mesa } from './mesa.js'
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
@@ -48,14 +52,30 @@ class MyScene extends THREE.Scene {
     this.add (this.axis);
     
     this.muro = new Estructura();
+    this.muro.receiveShadow = true;
     this.add(this.muro);
 
+    this.ventana = new Ventana();
+    this.add(this.ventana);
+
     this.cama = new Cama();
+  
     this.add(this.cama);
-    
 
     this.ventilador = new Ventilador();
     this.add(this.ventilador);
+
+    this.aspas = new Aspas();
+    this.add(this.aspas);
+
+    this.train = new Train();
+    this.add(this.train);
+    
+    this.mesa = new Mesa();
+    this.add(this.mesa);
+
+    this.armario = new Armario();
+    this.add(this.armario);
     
   }
   
@@ -80,7 +100,7 @@ class MyScene extends THREE.Scene {
     //   El ángulo del campo de visión en grados sexagesimales
     //   La razón de aspecto ancho/alto
     //   Los planos de recorte cercano y lejano
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 4000);
     // También se indica dónde se coloca
     this.camera.position.set (0, 200, 0);
     this.camera.fov = 90;
@@ -109,6 +129,7 @@ class MyScene extends THREE.Scene {
     // Ya se puede construir el Mesh
     var ground = new THREE.Mesh (geometryGround, materialGround);
     
+    ground.receiveShadow = true;
     // Todas las figuras se crean centradas en el origen.
     // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
     ground.position.y = -0.1;
@@ -153,7 +174,7 @@ class MyScene extends THREE.Scene {
     // La luz ambiental solo tiene un color y una intensidad
     // Se declara como   var   y va a ser una variable local a este método
     //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
+    var ambientLight = new THREE.AmbientLight(0xccddee, 0.3);
     // La añadimos a la escena
     this.add (ambientLight);
     
@@ -161,9 +182,11 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.spotLight = new THREE.PointLight( 0xffffff, this.guiControls.lightIntensity, 1000, 2 );
-    this.spotLight.position.set( 0, 450, 0 );
+    this.spotLight = new THREE.PointLight( 0xffffff, 0.6, 2000 );
+    this.spotLight.position.set( 0, 440, 0 );
     this.add (this.spotLight);
+    this.spotLight.castShadow = true;
+    
   }
   
   setLightIntensity (valor) {
@@ -181,11 +204,13 @@ class MyScene extends THREE.Scene {
     var renderer = new THREE.WebGLRenderer();
     
     // Se establece un color de fondo en las imágenes que genera el render
-    renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
+    renderer.setClearColor(new THREE.Color(0x000000), 1.0);
     
     // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
     renderer.setSize(window.innerWidth, window.innerHeight);
     
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
     // La visualización se muestra en el lienzo recibido
     $(myCanvas).append(renderer.domElement);
     
@@ -215,13 +240,27 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
 
+
   update () {
     
     if (this.stats) this.stats.update();
     
-    this.cameraControl.lock();
-   
-    
+    if((this.fd || this.bw || this.rt || this.lf) && !this.pause){
+      //if(!colosion(position, direction))
+      if(this.fd){
+        this.cameraControl.moveForward(1);
+      }
+      if(this.bw){
+        this.cameraControl.moveForward(-1);
+      }
+      if(this.rt){
+        this.cameraControl.moveRight(1);
+      }
+      if(this.lf){
+        this.cameraControl.moveRight(-1);
+      }
+    }
+    this.aspas.update();
      //Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
 
@@ -230,7 +269,57 @@ class MyScene extends THREE.Scene {
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update())
   }
+
+  onKeyDown(event){
+    switch(event.key){
+      case 'w':
+        this.fd = true;
+        break;
+      case 'a':
+        this.lf = true;
+        break;
+      case 's':
+        this.bw = true;
+        break;
+      case 'd':
+        this.rt = true;
+        break;
+      case 'p':
+        if(this.cameraControl.isLocked == true){
+          this.cameraControl.unlock();
+          this.pause = true;
+        }else{
+          this.pause = false;
+          this.cameraControl.lock();
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  onKeyUp(event){
+    switch(event.key){
+      case 'w':
+        this.fd = false;
+        break;
+      case 'a':
+        this.lf = false;
+        break;
+      case 's':
+        this.bw = false;
+        break;
+      case 'd':
+        this.rt = false;
+        break;
+      default:
+        break;
+    }
+  }
+  onUse(event){
+
+  }
 }
+
 
 /// La función   main
 $(function () {
@@ -240,6 +329,9 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
+  window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
+  window.addEventListener ("keyup", (event) => scene.onKeyUp(event));
+  window.addEventListener("Use", (event) => scene.onUse(event));
   
   // Que no se nos olvide, la primera visualización.
   scene.update();

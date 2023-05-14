@@ -58,30 +58,22 @@ class Estructura extends THREE.Object3D {
 
     csg.union([ventAux2]);
     var mesh = csg.toMesh();
+    mesh.receiveShadow = true;
     this.add(mesh);
 
-    //Cirstales
+    //Muros exterior
+    var exteriorGeometry = new THREE.BoxGeometry( 20, 960, 800);
+    var textureExterior = new THREE.TextureLoader().load('../imgs/ventana.jpg');
+    var exteriorMat = new THREE.MeshPhongMaterial ({map: textureExterior,
+    emissive: 0xffffff,
+    emissiveIntensity: 0.2});
+    var exWall2 = new THREE.Mesh( exteriorGeometry, exteriorMat);
+    exWall2.rotateY(Math.PI/2);
+    exWall2.translateX(600);
+    exWall2.translateY(200);
     
-    var glassMaterial = new THREE.MeshPhysicalMaterial({
-      roughness: 0,
-      transmission: 1,
-      thickness: 0.5,
-      color: 0x99c1f1,
-    });
-
-    var glassGeometry = new THREE.BoxGeometry( 200, 200, 10);
-    var glass = new THREE.Mesh( glassGeometry, glassMaterial);
-    glass.translateY(250);
-    glass.translateZ(-500);
-    glass.translateX(105);
-    var glass2 = new THREE.Mesh( glassGeometry, glassMaterial);
-    glass2.translateY(250);
-    glass2.translateZ(-500);
-    glass2.translateX(-105);
-    this.add(glass);
-    this.add(glass2); 
-
-
+    this.add(exWall2);
+    
   }
   
   update () {

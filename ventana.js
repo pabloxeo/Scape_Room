@@ -12,7 +12,7 @@ class Ventana extends THREE.Object3D {
 				imgTexture = null;
 
     var glassMaterial = new THREE.MeshPhysicalMaterial({
-        //map: imgTexture,
+        map: imgTexture,
         //roughness: 0,
         //transmission: 1,
         //reflectivity: 1,

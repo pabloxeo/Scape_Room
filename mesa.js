@@ -10,30 +10,44 @@ class Mesa extends THREE.Object3D{
         pata.translate(0, 50, 0);
         tabla.translate(0, 100, 0);
 
-        var mat= new THREE.MeshNormalMaterial();
+        var tabMat = new THREE.MeshPhongMaterial({color: 0xffffff});
+        var mat= new THREE.MeshPhongMaterial({color: 0xffffff});
+        
+        
 
-        var mesa_tab= new THREE.Mesh(tabla,mat);
+        var mesa_tab= new THREE.Mesh(tabla,tabMat);
+        mesa_tab.castShadow = true;
+        mesa_tab.receiveShadow = true;
         var pata1= new THREE.Mesh(pata,mat);
+        pata1.castShadow = true;
+        pata1.receiveShadow = true;
         pata1.translateX(75);
         pata1.translateZ(120);
         var pata2= new THREE.Mesh(pata,mat);
+        pata2.castShadow = true;
+        pata2.receiveShadow = true;
         pata2.translateX(75);
         pata2.translateZ(-120);
         var pata3= new THREE.Mesh(pata,mat);
+        pata3.castShadow = true;
+        pata3.receiveShadow = true;
         pata3.translateX(-75);
         pata3.translateZ(120);
         var pata4= new THREE.Mesh(pata,mat);
+        pata4.castShadow = true;
+        pata4.receiveShadow = true;
         pata4.translateX(-75);
         pata4.translateZ(-120);
         
-        var csg = new CSG();
-        csg.union([mesa_tab, pata1, pata2, pata3, pata4]);
-        var mesh = csg.toMesh();
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.rotateY(Math.PI/2);
-        mesh.translateX(380);
-        this.add(mesh);
+        this.add(mesa_tab);
+        this.add(pata1);
+        this.add(pata2);
+        this.add(pata3);
+        this.add(pata4);
+
+        this.rotateY(Math.PI/2);
+        this.translateX(390);
+
     }
 }
 export{Mesa};

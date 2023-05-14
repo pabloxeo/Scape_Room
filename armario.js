@@ -6,9 +6,12 @@ class Armario extends THREE.Object3D {
   constructor() {
     super();
 
+    var armTexture = new THREE.TextureLoader().load("../imgs/wood.jpg");
+    var mat= new THREE.MeshPhongMaterial({map: armTexture});
+
     var caja_grande= new THREE.BoxGeometry(100*2,150*2,75*2,30*2);
     caja_grande.translate(200*2,75*2,2*212.5);
-    var mat= new THREE.MeshNormalMaterial();
+    
 
     var huecp_geom= new THREE.BoxGeometry(85*2,35*2,55*2,50*2);
     huecp_geom.translate(200*2,2*120,192.5*2);
@@ -26,6 +29,7 @@ class Armario extends THREE.Object3D {
     // this.add(hueco1);
     
     var caja= new THREE.Mesh(caja_grande,mat);
+    
    
   //  this.add(this.caja);
 
@@ -34,10 +38,12 @@ class Armario extends THREE.Object3D {
     armario.subtract([hueco1]);
     armario.subtract([hueco2]);
     armario.subtract([hueco3]);
-    this.fin= armario.toMesh();
-    this.fin.translateZ(10);
-    this.fin.translateX(-10);
-    this.add(this.fin);
+    var fin = armario.toMesh();
+    fin.translateX(-10);
+    fin.castShadows = true;
+    fin.recieveShadows = true;
+
+    this.add(fin);
 
 
     

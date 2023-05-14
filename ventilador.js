@@ -6,16 +6,10 @@ class Ventilador extends THREE.Object3D {
   constructor() {
     super();
 
-    let imgTexture = new THREE.TextureLoader().load( '../imgs/moon_1024.jpg' );
-				imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
-				imgTexture.colorSpace = THREE.SRGBColorSpace;
-				imgTexture.anisotropy = 16;
-				imgTexture = null;
     
     var baseVGeom = new THREE.CylinderGeometry (35, 30, 10, 50);
     var material = new THREE.MeshPhongMaterial({color: 0xffffff});
     const material2 = new THREE.MeshBasicMaterial( {
-      map: imgTexture,
       color: 0xffffff,
       reflectivity: 1
     } );

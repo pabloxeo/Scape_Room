@@ -74,6 +74,15 @@ class MyScene extends THREE.Scene {
     this.mesa = new Mesa();
     this.add(this.mesa);
 
+
+    this.mesaN = new Mesa();
+    this.mesaN.scale.set(0.65, 0.65, 0.65);
+    this.mesaN.rotateY(Math.PI/2);
+    this.mesaN.translateX(425);
+    this.mesaN.position.set(-425, 0, -50);
+    this.add(this.mesaN);
+
+
     this.armario = new Armario();
     this.add(this.armario);
     
@@ -261,6 +270,7 @@ class MyScene extends THREE.Scene {
       }
     }
     this.aspas.update();
+    this.train.update();
      //Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
 

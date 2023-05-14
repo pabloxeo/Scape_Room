@@ -1,12 +1,12 @@
 import * as THREE from '../libs/three.module.js'
 import { CSG } from './libs/CSG-v2.js'; 
 import  *  as TWEEN from '../libs/tween.esm.js'
+import { CatmullRomCurve3 } from './libs/three.module.js';
 class Train extends THREE.Object3D {
     
     constructor() {
         super();
         var boxGeometry = new THREE.BoxGeometry(15, 15, 40, 1, 1, 1);
-        var trainTexture = new THREE.TextureLoader().load("../imgs/metal.png");
 
         var material = new THREE.MeshPhongMaterial({color: 0xffa500});
         var materialv = new THREE.MeshPhongMaterial({color: 0x00ff00});
@@ -69,9 +69,6 @@ class Train extends THREE.Object3D {
         var v1Mesh = csg2.toMesh();
         var v2Mesh = csg3.toMesh();
         var v3Mesh = csg4.toMesh();
-        v1Mesh.translateZ(-45);
-        v2Mesh.translateZ(-90);
-        v3Mesh.translateZ(-135);
         hMesh.castShadow = true;
         v1Mesh.castShadow = true;
         v2Mesh.castShadow = true;
@@ -81,13 +78,152 @@ class Train extends THREE.Object3D {
         this.add(v2Mesh);
         this.add(v3Mesh);
 
+
         var origen = {t:0};
         var destino = {t:1};
 
+        var spline = new THREE.CatmullRomCurve3([new THREE.Vector3(80, 0, 450),
+                                                 new THREE.Vector3(60, 10, 450),
+                                                 new THREE.Vector3(0, 160, 450),
+                                                 new THREE.Vector3(-460, 340, 450),
+                                                 new THREE.Vector3(-460, 340, 300),
+                                                 new THREE.Vector3(-460, 340, 200),
+                                                 new THREE.Vector3(-460, 340, -200),
+                                                 new THREE.Vector3(-460, 340, -300),
+                                                 new THREE.Vector3(-460, 340, -450),
+                                                 new THREE.Vector3(-10, 340, -450),
+                                                 new THREE.Vector3(440, 340, -450),
+                                                 new THREE.Vector3(440, 340, -280),
+                                                 new THREE.Vector3(440, 340, -100),
+                                                 new THREE.Vector3(440, 340, -100),
+                                                 new THREE.Vector3(440, 340, -40),
+                                                 new THREE.Vector3(440, 340, -10),
+                                                 new THREE.Vector3(440, 340, 450),
+                                                 new THREE.Vector3(300, 320, 450),
+                                                 new THREE.Vector3(250, 10, 450),
+                                                 new THREE.Vector3(200, 0, 450),
+                                                 new THREE.Vector3(100, 0, 450),
+                                                 new THREE.Vector3(80, 0, 450),]);
 
+        var spline2 = new THREE.CatmullRomCurve3([new THREE.Vector3(125, 0, 450),
+                                                    new THREE.Vector3(60, 10, 450),
+                                                    new THREE.Vector3(0, 160, 450),
+                                                    new THREE.Vector3(-460, 340, 450),
+                                                    new THREE.Vector3(-460, 340, 300),
+                                                    new THREE.Vector3(-460, 340, 200),
+                                                    new THREE.Vector3(-460, 340, -200),
+                                                    new THREE.Vector3(-460, 340, -300),
+                                                    new THREE.Vector3(-460, 340, -450),
+                                                    new THREE.Vector3(-10, 340, -450),
+                                                    new THREE.Vector3(440, 340, -450),
+                                                    new THREE.Vector3(440, 340, -280),
+                                                    new THREE.Vector3(440, 340, -100),
+                                                    new THREE.Vector3(440, 340, -100),
+                                                    new THREE.Vector3(440, 340, -40),
+                                                    new THREE.Vector3(440, 340, -10),
+                                                    new THREE.Vector3(440, 340, 450),
+                                                    new THREE.Vector3(300, 320, 450),
+                                                    new THREE.Vector3(250, 10, 450),
+                                                    new THREE.Vector3(200, 0, 450),
+                                                    new THREE.Vector3(125, 0, 450),]);
+                                                    
+    
+        var spline3 = new THREE.CatmullRomCurve3([new THREE.Vector3(170, 0, 450),
+                                                new THREE.Vector3(60, 10, 450),
+                                                new THREE.Vector3(0, 160, 450),
+                                                new THREE.Vector3(-460, 340, 450),
+                                                new THREE.Vector3(-460, 340, 300),
+                                                new THREE.Vector3(-460, 340, 200),
+                                                new THREE.Vector3(-460, 340, -200),
+                                                new THREE.Vector3(-460, 340, -300),
+                                                new THREE.Vector3(-460, 340, -450),
+                                                new THREE.Vector3(-10, 340, -450),
+                                                new THREE.Vector3(440, 340, -450),
+                                                new THREE.Vector3(440, 340, -280),
+                                                new THREE.Vector3(440, 340, -100),
+                                                new THREE.Vector3(440, 340, -100),
+                                                new THREE.Vector3(440, 340, -40),
+                                                new THREE.Vector3(440, 340, -10),
+                                                new THREE.Vector3(440, 340, 450),
+                                                new THREE.Vector3(300, 320, 450),
+                                                new THREE.Vector3(250, 10, 450),
+                                                new THREE.Vector3(200, 0, 450),
+                                                new THREE.Vector3(170, 0, 450),]);
+        var spline4 = new THREE.CatmullRomCurve3([new THREE.Vector3(215, 0, 450),
+                                                new THREE.Vector3(170, 0, 450),
+                                                new THREE.Vector3(60, 10, 450),
+                                                new THREE.Vector3(0, 160, 450),
+                                                new THREE.Vector3(-460, 340, 450),
+                                                new THREE.Vector3(-460, 340, 300),
+                                                new THREE.Vector3(-460, 340, 200),
+                                                new THREE.Vector3(-460, 340, -200),
+                                                new THREE.Vector3(-460, 340, -300),
+                                                new THREE.Vector3(-460, 340, -450),
+                                                new THREE.Vector3(-10, 340, -450),
+                                                new THREE.Vector3(440, 340, -450),
+                                                new THREE.Vector3(440, 340, -280),
+                                                new THREE.Vector3(440, 340, -100),
+                                                new THREE.Vector3(440, 340, -100),
+                                                new THREE.Vector3(440, 340, -40),
+                                                new THREE.Vector3(440, 340, -10),
+                                                new THREE.Vector3(440, 340, 450),
+                                                new THREE.Vector3(300, 320, 450),
+                                                new THREE.Vector3(250, 10, 450),
+                                                new THREE.Vector3(225, 0, 450),
+                                                new THREE.Vector3(215, 0, 450),]);
+                                                           
+
+
+                                        
+
+        //Se crea una geometría
+        var geometryLine = new THREE.BufferGeometry();
+
+        geometryLine.setFromPoints(spline.getPoints(100));
+
+        var material = new THREE.LineBasicMaterial({color:0xff0000,linewidth:2});
+        var visibleSpline = new THREE.Line(geometryLine,material);
         
-        var movimiento = new TWEEN.Tween(origen).to(destino,2000);
+        this.add(visibleSpline);
+        
+        var movimiento = new TWEEN.Tween(origen).to(destino,6000)
+        .onUpdate(() =>{
+            var posicion = spline2.getPointAt(origen.t);
+            v1Mesh.position.copy(posicion);
+            var tangente = spline2.getTangentAt(origen.t);
+            posicion.add(tangente);
+            v1Mesh.lookAt(posicion);
+        }).start();
 
+        var movimiento2 = new TWEEN.Tween(origen).to(destino,6000)
+        .onUpdate(() =>{
+            var posicion = spline3.getPointAt(origen.t);
+            v2Mesh.position.copy(posicion);
+            var tangente = spline3.getTangentAt(origen.t);
+            posicion.add(tangente);
+            v2Mesh.lookAt(posicion);
+        }).start();
+        var movimiento3 = new TWEEN.Tween(origen).to(destino,6000)
+        .onUpdate(() =>{
+            var posicion = spline4.getPointAt(origen.t);
+            v3Mesh.position.copy(posicion);
+            var tangente = spline4.getTangentAt(origen.t);
+            posicion.add(tangente);
+            v3Mesh.lookAt(posicion);
+        }).start();
+
+        var movimiento4 = new TWEEN.Tween(origen).to(destino,6000)
+        .onUpdate(() =>{
+            var posicion = spline.getPointAt(origen.t);
+            hMesh.position.copy(posicion);
+            var tangente = spline.getTangentAt(origen.t);
+            posicion.add(tangente);
+            hMesh.lookAt(posicion);
+        }).start();
+
+        }
+        update(){
+            TWEEN.update();
         }
     }
     export { Train };

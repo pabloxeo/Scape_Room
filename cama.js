@@ -19,10 +19,11 @@ class Cama extends THREE.Object3D {
         object.scale.set(2.5, 2.5, 2.5);
         object.rotateY(Math.PI/2);
         object.rotateX(-Math.PI/2);
-        object.translateY(220);
+        object.translateY(240);
         object.translateZ(115);
         object.translateX(-360);
         object.castShadow = true;
+        object.receiveShadow = true;
         object.traverse(function(node){
           if(node.isMesh){
             node.castShadow = true;

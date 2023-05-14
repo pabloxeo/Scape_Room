@@ -25,6 +25,9 @@ import { Mesa } from './mesa.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
+    this.pickable = []
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
   
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
@@ -59,7 +62,6 @@ class MyScene extends THREE.Scene {
     this.add(this.ventana);
 
     this.cama = new Cama();
-  
     this.add(this.cama);
 
     this.ventilador = new Ventilador();
@@ -70,6 +72,7 @@ class MyScene extends THREE.Scene {
 
     this.train = new Train();
     this.animar_tren = true;
+    this.pickable.push(this.train.getObjectByName("pieza"));
     this.add(this.train);
     
     this.mesa = new Mesa();
@@ -85,6 +88,7 @@ class MyScene extends THREE.Scene {
 
 
     this.armario = new Armario();
+    this.pickable.push(this.armario);
     this.add(this.armario);
     
 
@@ -337,8 +341,22 @@ class MyScene extends THREE.Scene {
         break;
     }
   }
-  onUse(event){
+  onClick(event){
+    
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = 1 - 2 * (event.clientY / window.innerHeight) ;
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    var pickedObjects = this.raycaster.intersectObjects(this.pickable, true);
 
+    if(pickedObjects.length > 0){
+      var clickedObject = pickedObjects[0].object;
+      if(clickedObject.userData == this.train){
+        this.pieza1 = true;
+      }
+      if(clickedObject.userData){
+        clickedObject.userData.use(clickedObject);
+      }
+    }
   }
 }
 
@@ -353,7 +371,7 @@ $(function () {
   window.addEventListener ("resize", () => scene.onWindowResize());
   window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
   window.addEventListener ("keyup", (event) => scene.onKeyUp(event));
-  window.addEventListener("Use", (event) => scene.onUse(event));
+  window.addEventListener("click", (event) => scene.onClick(event));
   
   // Que no se nos olvide, la primera visualización.
   scene.update();

@@ -35,6 +35,7 @@ class Ventilador extends THREE.Object3D {
     var latheObject_var = new THREE.Mesh (new THREE.LatheGeometry (points), material2);
     latheObject_var.recieveShadow = true;
     this.add(latheObject_var);
+
     
     
 }   

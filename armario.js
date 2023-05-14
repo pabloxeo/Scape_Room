@@ -38,17 +38,12 @@ class Armario extends THREE.Object3D {
     armario.subtract([hueco1]);
     armario.subtract([hueco2]);
     armario.subtract([hueco3]);
-    var fin = armario.toMesh();
-    fin.translateX(-10);
-    fin.castShadows = true;
-    fin.recieveShadows = true;
-
-    this.add(fin);
-
-
+    this.fin = armario.toMesh();
+    this.fin.translateX(-10);
+    this.fin.castShadows = true;
+    this.fin.recieveShadows = true;
+    this.add(this.fin);
     
-
-   
     
   }
   

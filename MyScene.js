@@ -69,6 +69,7 @@ class MyScene extends THREE.Scene {
     this.add(this.aspas);
 
     this.train = new Train();
+    this.animar_tren = true;
     this.add(this.train);
     
     this.mesa = new Mesa();
@@ -86,6 +87,8 @@ class MyScene extends THREE.Scene {
     this.armario = new Armario();
     this.add(this.armario);
     
+
+
   }
   
   initStats() {
@@ -271,6 +274,9 @@ class MyScene extends THREE.Scene {
     }
     this.aspas.update();
     this.train.update();
+    if(this.animar_tren)
+      this.train.repeat();
+      
      //Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
 
@@ -302,6 +308,12 @@ class MyScene extends THREE.Scene {
           this.pause = false;
           this.cameraControl.lock();
         }
+        break;
+      case 'c':
+        if(this.animar_tren)
+          this.animar_tren = false;
+        else
+          this.animar_tren = true;
         break;
       default:
         break;

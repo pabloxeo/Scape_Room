@@ -1,7 +1,6 @@
 import * as THREE from '../libs/three.module.js'
 import { CSG } from './libs/CSG-v2.js'; 
 import  *  as TWEEN from '../libs/tween.esm.js'
-import { CatmullRomCurve3 } from './libs/three.module.js';
 class Train extends THREE.Object3D {
     
     constructor() {
@@ -73,16 +72,21 @@ class Train extends THREE.Object3D {
         v1Mesh.castShadow = true;
         v2Mesh.castShadow = true;
         v3Mesh.castShadow = true;
+        hMesh.position.set(80, 0, 450);
+        v1Mesh.position.set(125, 0, 450);
+        v2Mesh.position.set(170, 0, 450);
+        v3Mesh.position.set(215, 0, 450);
         this.add(hMesh);
         this.add(v1Mesh);
         this.add(v2Mesh);
         this.add(v3Mesh);
 
+        let points = [];
 
         var origen = {t:0};
         var destino = {t:1};
 
-        var spline = new THREE.CatmullRomCurve3([new THREE.Vector3(80, 0, 450),
+        var spline = new THREE.CatmullRomCurve3([new THREE.Vector3(85, 2, 450),
                                                  new THREE.Vector3(60, 10, 450),
                                                  new THREE.Vector3(0, 160, 450),
                                                  new THREE.Vector3(-460, 340, 450),
@@ -101,11 +105,11 @@ class Train extends THREE.Object3D {
                                                  new THREE.Vector3(440, 340, 450),
                                                  new THREE.Vector3(300, 320, 450),
                                                  new THREE.Vector3(250, 10, 450),
-                                                 new THREE.Vector3(200, 0, 450),
-                                                 new THREE.Vector3(100, 0, 450),
-                                                 new THREE.Vector3(80, 0, 450),]);
+                                                 new THREE.Vector3(200, 2, 450),
+                                                 new THREE.Vector3(100, 2, 450),
+                                                 new THREE.Vector3(85, 2, 450),]);
 
-        var spline2 = new THREE.CatmullRomCurve3([new THREE.Vector3(125, 0, 450),
+        var spline2 = new THREE.CatmullRomCurve3([new THREE.Vector3(130, 2, 450),
                                                     new THREE.Vector3(60, 10, 450),
                                                     new THREE.Vector3(0, 160, 450),
                                                     new THREE.Vector3(-460, 340, 450),
@@ -124,11 +128,11 @@ class Train extends THREE.Object3D {
                                                     new THREE.Vector3(440, 340, 450),
                                                     new THREE.Vector3(300, 320, 450),
                                                     new THREE.Vector3(250, 10, 450),
-                                                    new THREE.Vector3(200, 0, 450),
-                                                    new THREE.Vector3(125, 0, 450),]);
+                                                    new THREE.Vector3(200, 2, 450),
+                                                    new THREE.Vector3(130, 2, 450),]);
                                                     
     
-        var spline3 = new THREE.CatmullRomCurve3([new THREE.Vector3(170, 0, 450),
+        var spline3 = new THREE.CatmullRomCurve3([new THREE.Vector3(175, 2, 450),
                                                 new THREE.Vector3(60, 10, 450),
                                                 new THREE.Vector3(0, 160, 450),
                                                 new THREE.Vector3(-460, 340, 450),
@@ -147,10 +151,10 @@ class Train extends THREE.Object3D {
                                                 new THREE.Vector3(440, 340, 450),
                                                 new THREE.Vector3(300, 320, 450),
                                                 new THREE.Vector3(250, 10, 450),
-                                                new THREE.Vector3(200, 0, 450),
-                                                new THREE.Vector3(170, 0, 450),]);
-        var spline4 = new THREE.CatmullRomCurve3([new THREE.Vector3(215, 0, 450),
-                                                new THREE.Vector3(170, 0, 450),
+                                                new THREE.Vector3(200, 2, 450),
+                                                new THREE.Vector3(175, 2, 450),]);
+        var spline4 = new THREE.CatmullRomCurve3([new THREE.Vector3(220, 2, 450),
+                                                new THREE.Vector3(170, 2, 450),
                                                 new THREE.Vector3(60, 10, 450),
                                                 new THREE.Vector3(0, 160, 450),
                                                 new THREE.Vector3(-460, 340, 450),
@@ -169,24 +173,20 @@ class Train extends THREE.Object3D {
                                                 new THREE.Vector3(440, 340, 450),
                                                 new THREE.Vector3(300, 320, 450),
                                                 new THREE.Vector3(250, 10, 450),
-                                                new THREE.Vector3(225, 0, 450),
-                                                new THREE.Vector3(215, 0, 450),]);
+                                                new THREE.Vector3(225, 2, 450),
+                                                new THREE.Vector3(220, 2, 450),]);
                                                            
+        points = spline.getPoints(1000);
 
-
-                                        
-
-        //Se crea una geometría
         var geometryLine = new THREE.BufferGeometry();
+        geometryLine.setFromPoints(spline.getPoints(20000));                                
 
-        geometryLine.setFromPoints(spline.getPoints(100));
+        var mat = new THREE.LineBasicMaterial({color: 0x000000});
 
-        var material = new THREE.LineBasicMaterial({color:0xff0000,linewidth:2});
-        var visibleSpline = new THREE.Line(geometryLine,material);
+        var visibleSpline = new THREE.Line(geometryLine, mat);
+        //this.add(visibleSpline);
         
-        this.add(visibleSpline);
-        
-        var movimiento = new TWEEN.Tween(origen).to(destino,6000)
+        this.movimiento = new TWEEN.Tween(origen).to(destino,60000)
         .onUpdate(() =>{
             var posicion = spline2.getPointAt(origen.t);
             v1Mesh.position.copy(posicion);
@@ -195,15 +195,15 @@ class Train extends THREE.Object3D {
             v1Mesh.lookAt(posicion);
         }).start();
 
-        var movimiento2 = new TWEEN.Tween(origen).to(destino,6000)
-        .onUpdate(() =>{
+        this.movimiento2 = new TWEEN.Tween(origen).to(destino,60000)
+        .onUpdate(() => {
             var posicion = spline3.getPointAt(origen.t);
             v2Mesh.position.copy(posicion);
             var tangente = spline3.getTangentAt(origen.t);
             posicion.add(tangente);
             v2Mesh.lookAt(posicion);
         }).start();
-        var movimiento3 = new TWEEN.Tween(origen).to(destino,6000)
+        this.movimiento3 = new TWEEN.Tween(origen).to(destino,60000)
         .onUpdate(() =>{
             var posicion = spline4.getPointAt(origen.t);
             v3Mesh.position.copy(posicion);
@@ -212,7 +212,7 @@ class Train extends THREE.Object3D {
             v3Mesh.lookAt(posicion);
         }).start();
 
-        var movimiento4 = new TWEEN.Tween(origen).to(destino,6000)
+        this.movimiento4 = new TWEEN.Tween(origen).to(destino,60000)
         .onUpdate(() =>{
             var posicion = spline.getPointAt(origen.t);
             hMesh.position.copy(posicion);
@@ -221,9 +221,44 @@ class Train extends THREE.Object3D {
             hMesh.lookAt(posicion);
         }).start();
 
+        var camino = new THREE.BoxGeometry(25, 2, 20);
+
+        for(var i = 0; i < 1000; i++){
+            var t = i * 1/1000;
+            var point = spline.getPoint(t);
+            var tangent = spline.getTangent(t);
+
+            let aux = new THREE.Mesh(camino, mat);
+            aux.position.copy(point);
+            aux.lookAt(point.clone().add(tangent));
+            this.add(aux);
+        }
+
+        var sujGeom = new THREE.CylinderGeometry(2, 2, 160, 20);
+        var sujecc = new THREE.Mesh(sujGeom, mat);
+        var sujecc2 = new THREE.Mesh(sujGeom, mat);
+        var sujecc3 = new THREE.Mesh(sujGeom, mat);
+        var sujecc4 = new THREE.Mesh(sujGeom, mat);
+
+        sujecc.position.set(445, 420, -455);
+        this.add(sujecc);
+        sujecc2.position.set(-465, 420, 455);
+        this.add(sujecc2);
+        sujecc3.position.set(-460, 420, -450);
+        this.add(sujecc3);
+        sujecc4.position.set(440, 420, 450);
+        this.add(sujecc4);
+
         }
         update(){
             TWEEN.update();
+        }
+        repeat(){
+            this.movimiento.start();
+            this.movimiento2.start();
+            this.movimiento3.start();
+            this.movimiento4.start();
+            requestAnimationFrame(() => this.update());
         }
     }
     export { Train };

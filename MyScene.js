@@ -17,6 +17,7 @@ import { Train } from './train.js'
 import { Aspas } from './aspas.js'
 import { Armario } from './armario.js'
 import { Mesa } from './mesa.js'
+import { Sphere, SphereGeometry, Vector3 } from './libs/three.module.js'
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
@@ -72,7 +73,6 @@ class MyScene extends THREE.Scene {
 
     this.cama = new Cama();
     var boxCama = new THREE.Box3();
-    boxCama.setFromObject(this.cama);
     var caja = new THREE.Box3Helper(boxCama, 0xffffff);
     this.add(caja);
     this.candidates.push(boxCama);
@@ -87,7 +87,7 @@ class MyScene extends THREE.Scene {
 
     this.train = new Train();
     this.animar_tren = true;
-    this.pickable.push(this.train.getObjectByName("pieza"));
+    this.pickable.push(this.train.getObjectByName("pieza1"));
     this.add(this.train);
     
     this.mesa = new Mesa();
@@ -117,9 +117,21 @@ class MyScene extends THREE.Scene {
 
     let boxGeometry = new THREE.BoxGeometry(50, 180, 50);
     let boxMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff0000});
+            color: 0xff0000,
+            transparent: true});
     this.body = new THREE.Mesh(boxGeometry, boxMaterial);
     this.add(this.body);
+
+    let sphereGeom = new THREE.SphereGeometry(0.015);
+    let sphereMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      opacity: 0.4,
+      transparent: true});
+    this.mira = new THREE.Mesh(sphereGeom, sphereMaterial);
+    this.mira.position.set(1, 180, 0);
+    
+    //this.add(this.mira);
+    
 
   }
   
@@ -150,8 +162,9 @@ class MyScene extends THREE.Scene {
     this.camera.fov = 90;
     this.camera.updateProjectionMatrix();
     // Y hacia dónde mira
-    var look = new THREE.Vector3 (100,150,0);
+    var look = new THREE.Vector3 (10,180,0);
     this.camera.lookAt(look);
+
     this.add (this.camera);
     
     // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
@@ -292,46 +305,37 @@ class MyScene extends THREE.Scene {
     
     if((this.fd || this.bw || this.rt || this.lf) && !this.pause ){
         if(this.fd){
-          let posOld = new THREE.Vector3();
-          posOld = this.camera.position;
           this.cameraControl.moveForward(25);
-          if(this.colision(posOld))
+          if(this.colision())
             this.cameraControl.moveForward(-25);
           else
             this.cameraControl.moveForward(-24);
         }
         if(this.bw){
-          let posOld = new THREE.Vector3();
-          posOld = this.camera.position;
           this.cameraControl.moveForward(-25);
-          if(this.colision(posOld))
+          if(this.colision())
             this.cameraControl.moveForward(25);
           else
             this.cameraControl.moveForward(24);
         }
         if(this.rt){
-          let posOld = new THREE.Vector3();
-          posOld = this.camera.position;
           this.cameraControl.moveRight(25);
-          if(this.colision(posOld))
+          if(this.colision())
             this.cameraControl.moveRight(-25);
           else
             this.cameraControl.moveRight(-24);
         }
         if(this.lf){
-          let posOld = new THREE.Vector3();
-          posOld = this.camera.position;
           this.cameraControl.moveRight(-25);
-          if(this.colision(posOld))
+          if(this.colision())
             this.cameraControl.moveRight(25);
           else
             this.cameraControl.moveRight(24);
         }
       
     }
-
+    
     this.body.position.set(this.camera.position.x, this.camera.position.y/2, this.camera.position.z);
-
     this.aspas.update();
     this.train.update();
     if(this.animar_tren)
@@ -398,9 +402,10 @@ class MyScene extends THREE.Scene {
     }
   }
   onClick(event){
-    
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = 1 - 2 * (event.clientY / window.innerHeight) ;
+    this.mouse.x  = window.innerWidth/2;
+    this.mouse.y = window.innerHeight/2
+    this.mouse.x = (this.mouse.x / window.innerWidth) * 2 - 1;
+    this.mouse.y = 1 - 2 * (this.mouse.y / window.innerHeight) ;
     this.raycaster.setFromCamera(this.mouse, this.camera);
     var pickedObjects = this.raycaster.intersectObjects(this.pickable, true);
 
@@ -415,19 +420,14 @@ class MyScene extends THREE.Scene {
     }
   }
 
-  colision(position) {
-    var posOld = this.body.position;
+  colision() {
     this.body.position.set(this.camera.position.x, this.camera.position.y/2, this.camera.position.z);
     let boxPr = new THREE.Box3().setFromObject(this.body);
     for(let candidate of this.candidates){
       if(boxPr.intersectsBox(candidate)){
-        boxPr.position = posOld;
-        this.camera.position.copy(position);  
         return true;
       }
     }
-    boxPr.position = posOld;
-    this.camera.position.copy(position);  
     return false;
 
   }

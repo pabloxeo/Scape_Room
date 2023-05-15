@@ -11,7 +11,7 @@ class Train extends THREE.Object3D {
         piezaG.rotateX(Math.PI/3)
         piezaG.translate(0, 20, 5);
         this.pieza = new THREE.Mesh(piezaG, materialb);
-        this.pieza.name = "pieza";
+        this.pieza.name = "pieza1";
         this.pieza.userData = this;
         this.add(this.pieza);
 
@@ -194,7 +194,7 @@ class Train extends THREE.Object3D {
         var visibleSpline = new THREE.Line(geometryLine, mat);
         //this.add(visibleSpline);
         
-        this.movimiento = new TWEEN.Tween(origen).to(destino,3000)
+        this.movimiento = new TWEEN.Tween(origen).to(destino,30000)
         .onUpdate(() =>{
             var posicion = spline2.getPointAt(origen.t);
             v1Mesh.position.copy(posicion);
@@ -203,7 +203,7 @@ class Train extends THREE.Object3D {
             v1Mesh.lookAt(posicion);
         }).start();
 
-        this.movimiento2 = new TWEEN.Tween(origen).to(destino,3000)
+        this.movimiento2 = new TWEEN.Tween(origen).to(destino,30000)
         .onUpdate(() => {
             var posicion = spline3.getPointAt(origen.t);
             v2Mesh.position.copy(posicion);
@@ -213,7 +213,7 @@ class Train extends THREE.Object3D {
             v2Mesh.lookAt(posicion);
             this.pieza.lookAt(posicion);
         }).start();
-        this.movimiento3 = new TWEEN.Tween(origen).to(destino,3000)
+        this.movimiento3 = new TWEEN.Tween(origen).to(destino,30000)
         .onUpdate(() =>{
             var posicion = spline4.getPointAt(origen.t);
             v3Mesh.position.copy(posicion);
@@ -222,7 +222,7 @@ class Train extends THREE.Object3D {
             v3Mesh.lookAt(posicion);
         }).start();
 
-        this.movimiento4 = new TWEEN.Tween(origen).to(destino,3000)
+        this.movimiento4 = new TWEEN.Tween(origen).to(destino,30000)
         .onUpdate(() =>{
             var posicion = spline.getPointAt(origen.t);
             hMesh.position.copy(posicion);
@@ -259,10 +259,6 @@ class Train extends THREE.Object3D {
         sujecc4.position.set(440, 420, 450);
         this.add(sujecc4);
 
-
-        
-
-
         }
         update(){
             TWEEN.update();
@@ -272,7 +268,6 @@ class Train extends THREE.Object3D {
             this.movimiento2.start();
             this.movimiento3.start();
             this.movimiento4.start();
-            requestAnimationFrame(() => this.update());
         }
         use(mesh){
             mesh.userData.remove(mesh);

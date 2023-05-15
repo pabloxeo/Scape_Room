@@ -71,14 +71,8 @@ class MyScene extends THREE.Scene {
     this.ventana = new Ventana();
     this.add(this.ventana);
 
-    this.cama = new Cama();
-  
-    var boxCama = new THREE.Box3();
-    boxCama = this.cama.getbBox();
-    this.candidates.push(boxCama);
-    //var caja = new THREE.Box3Helper(boxCama, 0xffffff);
-    //this.add(caja);
-    this.add(this.cama);
+    this.loadCama();
+    
 
     this.ventilador = new Ventilador();
     
@@ -120,7 +114,8 @@ class MyScene extends THREE.Scene {
     let boxGeometry = new THREE.BoxGeometry(50, 180, 50);
     let boxMaterial = new THREE.MeshBasicMaterial({
             color: 0xff0000,
-            transparent: true});
+            transparent: true,
+            opacity: 0});
     this.body = new THREE.Mesh(boxGeometry, boxMaterial);
     this.add(this.body);
 
@@ -134,6 +129,26 @@ class MyScene extends THREE.Scene {
     this.add(this.mira);
     
 
+  }
+  
+  loadCama(){
+    this.cama = new Cama();
+    this.add(this.cama);
+
+    let addCama = () => {
+      var boxCama = new THREE.Box3();
+      boxCama.copy(this.cama.box);
+      this.candidates.push(boxCama);
+    }
+    let checkear = () => {
+      if (this.cama.box.max.x == -Infinity) {
+        setTimeout(checkear, 2);
+      } else {
+        addCama();
+      }
+    }
+
+    checkear();
   }
   
   initStats() {

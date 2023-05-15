@@ -25,7 +25,8 @@ import { Mesa } from './mesa.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
-    this.pickable = []
+    this.pickable = [];
+    this.candidates = [];
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
   
@@ -55,16 +56,30 @@ class MyScene extends THREE.Scene {
     this.add (this.axis);
     
     this.muro = new Estructura();
-    this.muro.receiveShadow = true;
+    var boxWall1 = new THREE.Box3();
+    boxWall1.setFromObject(this.muro.getObjectByName("muro1"));
+    var boxWall2 = new THREE.Box3();
+    boxWall2.setFromObject(this.muro.getObjectByName("muro2"));
+    var boxWall3 = new THREE.Box3();
+    boxWall3.setFromObject(this.muro.getObjectByName("muro3"));
+    var boxWall4 = new THREE.Box3();
+    boxWall4.setFromObject(this.muro.getObjectByName("muro4"));
+    this.candidates.push(boxWall1, boxWall2, boxWall3, boxWall4);
     this.add(this.muro);
 
     this.ventana = new Ventana();
     this.add(this.ventana);
 
     this.cama = new Cama();
+    var boxCama = new THREE.Box3();
+    boxCama.setFromObject(this.cama);
+    var caja = new THREE.Box3Helper(boxCama, 0xffffff);
+    this.add(caja);
+    this.candidates.push(boxCama);
     this.add(this.cama);
 
     this.ventilador = new Ventilador();
+    
     this.add(this.ventilador);
 
     this.aspas = new Aspas();
@@ -76,6 +91,9 @@ class MyScene extends THREE.Scene {
     this.add(this.train);
     
     this.mesa = new Mesa();
+    var boxMesa = new THREE.Box3();
+    boxMesa.setFromObject(this.mesa);
+    this.candidates.push(boxMesa);
     this.add(this.mesa);
 
 
@@ -84,14 +102,24 @@ class MyScene extends THREE.Scene {
     this.mesaN.rotateY(Math.PI/2);
     this.mesaN.translateX(425);
     this.mesaN.position.set(-425, 0, -50);
+
+    var boxMesaN = new THREE.Box3();
+    boxMesaN.setFromObject(this.mesaN);
+    this.candidates.push(boxMesaN);
     this.add(this.mesaN);
 
 
     this.armario = new Armario();
-    this.pickable.push(this.armario);
+    var boxArm = new THREE.Box3();
+    boxArm.setFromObject(this.armario);
+    this.candidates.push(boxArm);
     this.add(this.armario);
-    
 
+    let boxGeometry = new THREE.BoxGeometry(50, 180, 50);
+    let boxMaterial = new THREE.MeshBasicMaterial({
+            color: 0xff0000});
+    this.body = new THREE.Mesh(boxGeometry, boxMaterial);
+    this.add(this.body);
 
   }
   
@@ -118,7 +146,7 @@ class MyScene extends THREE.Scene {
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 4000);
     // También se indica dónde se coloca
-    this.camera.position.set (0, 200, 0);
+    this.camera.position.set (0, 180, 0);
     this.camera.fov = 90;
     this.camera.updateProjectionMatrix();
     // Y hacia dónde mira
@@ -212,6 +240,7 @@ class MyScene extends THREE.Scene {
   setAxisVisible (valor) {
     this.axis.visible = valor;
   }
+
   
   createRenderer (myCanvas) {
     // Se recibe el lienzo sobre el que se van a hacer los renderizados. Un div definido en el html.
@@ -261,21 +290,48 @@ class MyScene extends THREE.Scene {
     
     if (this.stats) this.stats.update();
     
-    if((this.fd || this.bw || this.rt || this.lf) && !this.pause){
-      //if(!colosion(position, direction))
-      if(this.fd){
-        this.cameraControl.moveForward(1);
-      }
-      if(this.bw){
-        this.cameraControl.moveForward(-1);
-      }
-      if(this.rt){
-        this.cameraControl.moveRight(1);
-      }
-      if(this.lf){
-        this.cameraControl.moveRight(-1);
-      }
+    if((this.fd || this.bw || this.rt || this.lf) && !this.pause ){
+        if(this.fd){
+          let posOld = new THREE.Vector3();
+          posOld = this.camera.position;
+          this.cameraControl.moveForward(25);
+          if(this.colision(posOld))
+            this.cameraControl.moveForward(-25);
+          else
+            this.cameraControl.moveForward(-24);
+        }
+        if(this.bw){
+          let posOld = new THREE.Vector3();
+          posOld = this.camera.position;
+          this.cameraControl.moveForward(-25);
+          if(this.colision(posOld))
+            this.cameraControl.moveForward(25);
+          else
+            this.cameraControl.moveForward(24);
+        }
+        if(this.rt){
+          let posOld = new THREE.Vector3();
+          posOld = this.camera.position;
+          this.cameraControl.moveRight(25);
+          if(this.colision(posOld))
+            this.cameraControl.moveRight(-25);
+          else
+            this.cameraControl.moveRight(-24);
+        }
+        if(this.lf){
+          let posOld = new THREE.Vector3();
+          posOld = this.camera.position;
+          this.cameraControl.moveRight(-25);
+          if(this.colision(posOld))
+            this.cameraControl.moveRight(25);
+          else
+            this.cameraControl.moveRight(24);
+        }
+      
     }
+
+    this.body.position.set(this.camera.position.x, this.camera.position.y/2, this.camera.position.z);
+
     this.aspas.update();
     this.train.update();
     if(this.animar_tren)
@@ -358,8 +414,24 @@ class MyScene extends THREE.Scene {
       }
     }
   }
-}
 
+  colision(position) {
+    var posOld = this.body.position;
+    this.body.position.set(this.camera.position.x, this.camera.position.y/2, this.camera.position.z);
+    let boxPr = new THREE.Box3().setFromObject(this.body);
+    for(let candidate of this.candidates){
+      if(boxPr.intersectsBox(candidate)){
+        boxPr.position = posOld;
+        this.camera.position.copy(position);  
+        return true;
+      }
+    }
+    boxPr.position = posOld;
+    this.camera.position.copy(position);  
+    return false;
+
+  }
+}
 
 /// La función   main
 $(function () {

@@ -72,10 +72,12 @@ class MyScene extends THREE.Scene {
     this.add(this.ventana);
 
     this.cama = new Cama();
+  
     var boxCama = new THREE.Box3();
-    var caja = new THREE.Box3Helper(boxCama, 0xffffff);
-    this.add(caja);
+    boxCama = this.cama.getbBox();
     this.candidates.push(boxCama);
+    //var caja = new THREE.Box3Helper(boxCama, 0xffffff);
+    //this.add(caja);
     this.add(this.cama);
 
     this.ventilador = new Ventilador();
@@ -128,9 +130,8 @@ class MyScene extends THREE.Scene {
       opacity: 0.4,
       transparent: true});
     this.mira = new THREE.Mesh(sphereGeom, sphereMaterial);
-    this.mira.position.set(1, 180, 0);
-    
-    //this.add(this.mira);
+    this.mira.position.set(1, 0, 0);
+    this.add(this.mira);
     
 
   }
@@ -165,7 +166,7 @@ class MyScene extends THREE.Scene {
     var look = new THREE.Vector3 (10,180,0);
     this.camera.lookAt(look);
 
-    this.add (this.camera);
+    this.add(this.camera);
     
     // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
     this.cameraControl = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -227,18 +228,10 @@ class MyScene extends THREE.Scene {
   }
   
   createLights () {
-    // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
-    // La luz ambiental solo tiene un color y una intensidad
-    // Se declara como   var   y va a ser una variable local a este método
-    //    se hace así puesto que no va a ser accedida desde otros métodos
+
     var ambientLight = new THREE.AmbientLight(0xccddee, 0.3);
-    // La añadimos a la escena
     this.add (ambientLight);
-    
-    // Se crea una luz focal que va a ser la luz principal de la escena
-    // La luz focal, además tiene una posición, y un punto de mira
-    // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
-    // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
+
     this.spotLight = new THREE.PointLight( 0xffffff, 0.6, 2000 );
     this.spotLight.position.set( 0, 440, 0 );
     this.add (this.spotLight);
@@ -341,14 +334,30 @@ class MyScene extends THREE.Scene {
     if(this.animar_tren)
       this.train.repeat();
       
+      this.updatePositionForCamera();
      //Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
+    
 
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update())
   }
+
+  updatePositionForCamera() {
+    // fixed distance from camera to the object
+    var dist = 1;
+    var cwd = new THREE.Vector3();
+    
+    this.camera.getWorldDirection(cwd);
+    
+    cwd.multiplyScalar(dist);
+    cwd.add(this.camera.position);
+    
+    this.mira.position.set(cwd.x, cwd.y, cwd.z);
+    this.mira.setRotationFromQuaternion(this.camera.quaternion);
+}
 
   onKeyDown(event){
     switch(event.key){

@@ -10,7 +10,7 @@ class Mesa extends THREE.Object3D{
         pata.translate(0, 50, 0);
         tabla.translate(0, 100, 0);
 
-        var tabMat = new THREE.MeshPhongMaterial({color: 0xffffff});
+        var tabMat = new THREE.MeshLambertMaterial({color: 0xffffff});
         var mat= new THREE.MeshPhongMaterial({color: 0xffffff});
         
         

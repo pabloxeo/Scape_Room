@@ -26,10 +26,18 @@ import { Simon } from './simon_dice.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
+    this.pieza1 = false;
+    this.pieza2 = false;
+
+    this.compSimon = false;
     this.pickable = [];
     this.candidates = [];
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
+    this.pRojo = false;
+    this.pAmar = false;
+    this.pAzul = false;
+    this.pVerde = false;
   
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
@@ -111,6 +119,11 @@ class MyScene extends THREE.Scene {
     this.add(this.armario);
 
     this.simon = new Simon();
+    this.pickable.push(this.simon.getObjectByName("rojo"));
+    this.pickable.push(this.simon.getObjectByName("azul"));
+    this.pickable.push(this.simon.getObjectByName("verde"));
+    this.pickable.push(this.simon.getObjectByName("amar"));
+    this.pickable.push(this.simon.getObjectByName("cajon"));
     this.add(this.simon);
 
     let boxGeometry = new THREE.BoxGeometry(50, 180, 50);
@@ -440,10 +453,44 @@ class MyScene extends THREE.Scene {
       if(clickedObject.userData == this.train){
         this.pieza1 = true;
       }
+      if(clickedObject.userData == this.simon){
+        this.pieza2 = true;
+      }
+      if(clickedObject.userData == this.simon && !this.compSimon){
+        this.comprobarSimon(clickedObject);
+      }
       if(clickedObject.userData){
         clickedObject.userData.use(clickedObject);
       }
     }
+  }
+
+  comprobarSimon(boton){
+    if(boton == this.simon.getObjectByName("rojo") && !this.pRojo && !this.pAzul && !this.pAmar && !this.pVerde){
+      this.pRojo = true;
+    }else if(boton == this.simon.getObjectByName("rojo")){
+      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      boton.userData.error();
+    }
+    if(boton == this.simon.getObjectByName("amar") && this.pRojo && !this.pVerde && !this.pAzul && !this.pAmar){
+      this.pAmar = true;
+    }
+    if(boton == this.simon.getObjectByName("azul") && this.pAmar && !this.pAzul && !this.pVerde){
+      this.pAzul = true;
+    }else if(boton == this.simon.getObjectByName("azul")){
+      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      boton.userData.error();
+    }
+    if(boton == this.simon.getObjectByName("verde") && this.pAzul){
+      this.pVerde = true;
+      this.compSimon = true;
+      boton.userData.complete();
+    }else if(boton == this.simon.getObjectByName("verde")){
+      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      boton.userData.error();
+    }
+
+
   }
 
   colision() {

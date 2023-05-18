@@ -124,6 +124,8 @@ class MyScene extends THREE.Scene {
     this.pickable.push(this.simon.getObjectByName("verde"));
     this.pickable.push(this.simon.getObjectByName("amar"));
     this.pickable.push(this.simon.getObjectByName("cajon"));
+    this.pickable.push(this.simon.getObjectByName("pieza2"));
+    this.pickable.push(this.simon.getObjectByName("vaso"));
     this.add(this.simon);
 
     let boxGeometry = new THREE.BoxGeometry(50, 180, 50);
@@ -448,19 +450,21 @@ class MyScene extends THREE.Scene {
     this.raycaster.setFromCamera(this.mouse, this.camera);
     var pickedObjects = this.raycaster.intersectObjects(this.pickable, true);
 
-    if(pickedObjects.length > 0){
-      var clickedObject = pickedObjects[0].object;
-      if(clickedObject.userData == this.train){
-        this.pieza1 = true;
-      }
-      if(clickedObject.userData == this.simon){
-        this.pieza2 = true;
-      }
-      if(clickedObject.userData == this.simon && !this.compSimon){
-        this.comprobarSimon(clickedObject);
-      }
-      if(clickedObject.userData){
-        clickedObject.userData.use(clickedObject);
+    if(pickedObjects.length > 0 ){
+      if(pickedObjects[0].distance < 200){
+        var clickedObject = pickedObjects[0].object;
+        if(clickedObject.userData == this.train){
+          this.pieza1 = true;
+        }
+        if(clickedObject.userData == this.simon){
+          this.pieza2 = true;
+        }
+        if(clickedObject.userData == this.simon && !this.compSimon){
+          this.comprobarSimon(clickedObject);
+        }
+        if(clickedObject.userData){
+          clickedObject.userData.use(clickedObject);
+        }
       }
     }
   }
@@ -474,6 +478,9 @@ class MyScene extends THREE.Scene {
     }
     if(boton == this.simon.getObjectByName("amar") && this.pRojo && !this.pVerde && !this.pAzul && !this.pAmar){
       this.pAmar = true;
+    }else if(boton == this.simon.getObjectByName("amar")){
+      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      boton.userData.error();
     }
     if(boton == this.simon.getObjectByName("azul") && this.pAmar && !this.pAzul && !this.pVerde){
       this.pAzul = true;

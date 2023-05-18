@@ -1,22 +1,46 @@
 import * as THREE from '../libs/three.module.js'
 import {MeshPhongMaterial} from '../libs/three.module.js'
 import  *  as TWEEN from '../libs/tween.esm.js'
+import { CSG } from './libs/CSG-v2.js'; 
+import { Mesh } from './libs/three.module.js';
 
 class Simon extends THREE.Object3D{
     constructor(){
         super();
     
-        var caja_luz= new THREE.BoxGeometry(20,15,20);
+        var caja_luz= new THREE.BoxGeometry(20,15,20,);
         var caja_grande= new THREE.BoxGeometry(110,15,40);
+        var mat= new THREE.MeshPhongMaterial({color: 0x000000});
+        var matP= new THREE.MeshBasicMaterial({color: 0xffa500, emissive: 1});
         caja_grande.rotateY(Math.PI/2);
         caja_grande.translate(-390,75,0);
-        
+        var vasoG = new THREE.CylinderGeometry(12, 24, 48, 32);
+        vasoG.translate(-440,90,0);
+        this.vaso = new THREE.Mesh(vasoG, mat);
+        this.vaso.name = "vaso";
+        this.vaso.userData = this;
+        this.vaso.castShadow = true;
+        this.add(this.vaso);
+        var cilindroG = new THREE.CylinderGeometry(6, 6, 20, 32);
+        cilindroG.translate(0,0,6);
+        var cuboG = new THREE.BoxGeometry(20, 5, 8);
+        var cubo = new Mesh(cuboG, matP);
+        var cilindro = new Mesh(cilindroG, mat);
+        var csg = new CSG();
+        csg.subtract([cubo, cilindro]);
+        this.pieza = csg.toMesh();
+        this.pieza.name = "pieza2";
+        this.pieza.position.set(-440,75,0)
+        this.pieza.userData = this;
+        this.pieza.castShadow = true;
+        this.add(this.pieza);
+
 
         this.luz_roja= new THREE.PointLight(0xFF3333,0.4,1000);
         this.luz_azul= new THREE.PointLight(0x3349FF,0.4,1000);
         this.luz_verde= new THREE.PointLight(0x33FF52,0.4,1000);
         this.luz_amarilla= new THREE.PointLight(0xFFFF33,0.4,1000);
-        var mat= new THREE.MeshPhongMaterial({color: 0x000000});
+        
  
         this.mat_caja_roja= new THREE.MeshPhysicalMaterial({
             color: 0xFF3333,
@@ -202,16 +226,21 @@ class Simon extends THREE.Object3D{
         this.remove(this.yelLight);
     }
     use(mesh){
-        if(mesh == this.mesh_caja_roja){
-            this.pressLuzR();
-        }else if(mesh == this.mesh_caja_azul){
-            this.pressLuzB();
-        }else if(mesh == this.mesh_caja_verde){
-            this.pressLuzG();
-        }else if(mesh == this.mesh_caja_amarillo){
-            this.pressLuzY();
-        }else if(mesh == this.caja_juego){
-            this.pista(mesh);
+        if(mesh == this.vaso){
+        }else if(mesh == this.pieza){
+            this.remove(this.pieza);
+        }else{
+            if(mesh == this.mesh_caja_roja){
+                this.pressLuzR();
+            }else if(mesh == this.mesh_caja_azul){
+                this.pressLuzB();
+            }else if(mesh == this.mesh_caja_verde){
+                this.pressLuzG();
+            }else if(mesh == this.mesh_caja_amarillo){
+                this.pressLuzY();
+            }else if(mesh == this.caja_juego){
+                this.pista(mesh);
+            }
         }
     }
 
@@ -336,6 +365,16 @@ class Simon extends THREE.Object3D{
         setTimeout(pressY, 300);
         setTimeout(pressB, 600);
         setTimeout(pressR, 900);
+        this.destapar();
+    }
+    destapar(){
+        let origin = this.vaso.position;
+        let destino = new THREE.Vector3(origin.x, origin.y+50, origin.z);
+        let movimiento = new TWEEN.Tween(origin).to(destino,300)
+        .onUpdate(() =>{
+            this.vaso.position.y+=0.01;
+        }).start();
+        TWEEN.update();
     }
         
         

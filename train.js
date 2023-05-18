@@ -6,14 +6,15 @@ class Train extends THREE.Object3D {
     constructor() {
         super();
         var boxGeometry = new THREE.BoxGeometry(15, 15, 40, 1, 1, 1);
-
+        var materialP = new THREE.MeshBasicMaterial({color: 0xffa500, emissive: 1});
         var piezaG = new THREE.CylinderGeometry(5, 5, 20, 20);
         piezaG.rotateX(Math.PI/3)
         piezaG.translate(0, 20, 5);
-        this.pieza = new THREE.Mesh(piezaG, materialb);
+        this.pieza = new THREE.Mesh(piezaG, materialP);
         this.pieza.name = "pieza1";
         this.pieza.userData = this;
         this.add(this.pieza);
+        
 
         var material = new THREE.MeshPhongMaterial({color: 0xffa500});
         var materialv = new THREE.MeshPhongMaterial({color: 0x00ff00});
@@ -28,7 +29,7 @@ class Train extends THREE.Object3D {
         var headMesh = new THREE.Mesh(headGeometry, headMaterial);
         headMesh.position.y = 15;
         headMesh.position.z = 11;
-
+    
         var wheelGeometry = new THREE.CylinderGeometry(5, 5, 5, 12);
         var wheelMesh1 = new THREE.Mesh(wheelGeometry, materialv);
         wheelMesh1.position.x = 6;

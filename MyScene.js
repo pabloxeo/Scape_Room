@@ -17,7 +17,7 @@ import { Train } from './train.js'
 import { Aspas } from './aspas.js'
 import { Armario } from './armario.js'
 import { Mesa } from './mesa.js'
-import { Sphere, SphereGeometry, Vector3 } from './libs/three.module.js'
+import { Simon } from './simon_dice.js'
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
@@ -104,12 +104,14 @@ class MyScene extends THREE.Scene {
     this.candidates.push(boxMesaN);
     this.add(this.mesaN);
 
-
     this.armario = new Armario();
     var boxArm = new THREE.Box3();
     boxArm.setFromObject(this.armario);
     this.candidates.push(boxArm);
     this.add(this.armario);
+
+    this.simon = new Simon();
+    this.add(this.simon);
 
     let boxGeometry = new THREE.BoxGeometry(50, 180, 50);
     let boxMaterial = new THREE.MeshBasicMaterial({
@@ -247,7 +249,7 @@ class MyScene extends THREE.Scene {
     var ambientLight = new THREE.AmbientLight(0xccddee, 0.3);
     this.add (ambientLight);
 
-    this.spotLight = new THREE.PointLight( 0xffffff, 0.6, 2000 );
+    this.spotLight = new THREE.PointLight( 0xffffff, 0, 2000 );
     this.spotLight.position.set( 0, 440, 0 );
     this.add (this.spotLight);
     this.spotLight.castShadow = true;

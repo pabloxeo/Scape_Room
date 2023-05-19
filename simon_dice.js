@@ -8,12 +8,16 @@ class Simon extends THREE.Object3D{
     constructor(){
         super();
     
-        var caja_luz= new THREE.BoxGeometry(20,15,20,);
-        var caja_grande= new THREE.BoxGeometry(110,15,40);
+        var caja_luz= new THREE.BoxGeometry(20,10,20,);
+        var caja_grande= new THREE.BoxGeometry(20,10,20);
+        var caja_prin= new THREE.BoxGeometry(110,10,40);
         var mat= new THREE.MeshPhongMaterial({color: 0x000000});
         var matP= new THREE.MeshBasicMaterial({color: 0xffa500, emissive: 1});
-        caja_grande.rotateY(Math.PI/2);
-        caja_grande.translate(-390,75,0);
+        caja_prin.rotateY(Math.PI/2);
+        caja_prin.translate(-390,75,0);
+        caja_grande.translate(-390,75,80);
+        var caja_aux = new THREE.Mesh(caja_prin, mat);
+        this.add(caja_aux);
         var vasoG = new THREE.CylinderGeometry(12, 24, 48, 32);
         vasoG.translate(-440,90,0);
         this.vaso = new THREE.Mesh(vasoG, mat);
@@ -118,7 +122,7 @@ class Simon extends THREE.Object3D{
         this.mesh_caja_verde.translateZ(40);
         this.greenLight = new THREE.PointLight( 0x33FF52, 1, 100);
         this.greenLight.castShadow = true;
-        this.greenLight.position.set(-390, 70, -40);
+        this.greenLight.position.set(-390, 70, 40);
 
         this.mesh_caja_amarillo.translateY(85);
         this.mesh_caja_amarillo.translateX(-390);
@@ -251,13 +255,11 @@ class Simon extends THREE.Object3D{
         let destino = new THREE.Vector3(origin.x, origin.y-10, origin.z);
         let movimiento = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_roja.position.y-=0.01;
         }).start();
         origin = this.mesh_caja_roja.position;
         destino = new THREE.Vector3(origin.x, origin.y, origin.z);
         let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_roja.position.y+=0.01;
         })
         .onComplete(() => {
             this.apagarLuzR();
@@ -272,13 +274,11 @@ class Simon extends THREE.Object3D{
         let destino = new THREE.Vector3(origin.x, origin.y-10, origin.z);
         let movimiento = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_azul.position.y-=0.01;
         }).start();
         origin = this.mesh_caja_azul.position;
         destino = new THREE.Vector3(origin.x, origin.y, origin.z);
         let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_azul.position.y+=0.01;
         })
         .onComplete(() => {
             this.apagarLuzB();
@@ -299,7 +299,6 @@ class Simon extends THREE.Object3D{
         destino = new THREE.Vector3(origin.x, origin.y, origin.z);
         let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_verde.position.y+=0.01;
         })
         .onComplete(() => {
             this.apagarLuzG();
@@ -320,7 +319,6 @@ class Simon extends THREE.Object3D{
         destino = new THREE.Vector3(origin.x, origin.y, origin.z);
         let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_amarillo.position.y+=0.01;
         })
         .onComplete(() => {
             this.apagarLuzY();
@@ -372,7 +370,6 @@ class Simon extends THREE.Object3D{
         let destino = new THREE.Vector3(origin.x, origin.y+50, origin.z);
         let movimiento = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.vaso.position.y+=0.01;
         }).start();
         TWEEN.update();
     }

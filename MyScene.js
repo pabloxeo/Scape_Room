@@ -2,7 +2,6 @@
 // Clases de la biblioteca
 
 import * as THREE from '../libs/three.module.js'
-import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import { Stats } from '../libs/stats.module.js'
 import { PointerLockControls } from '../libs/PointerLockControls.js'
@@ -42,8 +41,6 @@ class MyScene extends THREE.Scene {
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
     
-    // Se añade a la gui los controles para manipular los elementos de esta clase
-    this.gui = this.createGUI ();
     
     this.initStats();
     
@@ -83,7 +80,8 @@ class MyScene extends THREE.Scene {
     
 
     this.ventilador = new Ventilador();
-    
+    this.pickable.push(this.ventilador.getObjectByName("boton"));
+    this.pickable.push(this.ventilador.getObjectByName("inter"));
     this.add(this.ventilador);
 
     this.aspas = new Aspas();
@@ -92,6 +90,9 @@ class MyScene extends THREE.Scene {
     this.train = new Train();
     this.animar_tren = true;
     this.pickable.push(this.train.getObjectByName("pieza1"));
+    this.pickable.push(this.train.getObjectByName("boton"));
+    this.pickable.push(this.train.getObjectByName("bola"));
+    this.pickable.push(this.train.getObjectByName("inter"));
     this.add(this.train);
     
     this.mesa = new Mesa();
@@ -228,52 +229,15 @@ class MyScene extends THREE.Scene {
     this.add (ground);
   }
   
-  createGUI () {
-    // Se crea la interfaz gráfica de usuario
-    var gui = new GUI();
-    
-    // La escena le va a añadir sus propios controles. 
-    // Se definen mediante un objeto de control
-    // En este caso la intensidad de la luz y si se muestran o no los ejes
-    this.guiControls = {
-      // En el contexto de una función   this   alude a la función
-      lightIntensity : 0.5,
-      axisOnOff : true,
-      pause : true
-    }
-
-    // Se crea una sección para los controles de esta clase
-    var folder = gui.addFolder ('Luz y Ejes');
-    
-    // Se le añade un control para la intensidad de la luz
-    folder.add (this.guiControls, 'lightIntensity', 0, 1, 0.1)
-      .name('Intensidad de la Luz : ')
-      .onChange ( (value) => this.setLightIntensity (value) );
-    
-    // Y otro para mostrar u ocultar los ejes
-    folder.add (this.guiControls, 'axisOnOff')
-      .name ('Mostrar ejes : ')
-      .onChange ( (value) => this.setAxisVisible (value) );
   
-  
-  return gui;
-  }
   
   createLights () {
 
     var ambientLight = new THREE.AmbientLight(0xccddee, 0.3);
     this.add (ambientLight);
-
-    this.spotLight = new THREE.PointLight( 0xffffff, 0, 2000 );
-    this.spotLight.position.set( 0, 440, 0 );
-    this.add (this.spotLight);
-    this.spotLight.castShadow = true;
     
   }
   
-  setLightIntensity (valor) {
-    this.spotLight.intensity = valor;
-  }
   
   setAxisVisible (valor) {
     this.axis.visible = valor;
@@ -414,12 +378,6 @@ class MyScene extends THREE.Scene {
           this.cameraControl.lock();
         }
         break;
-      case 'c':
-        if(this.animar_tren)
-          this.animar_tren = false;
-        else
-          this.animar_tren = true;
-        break;
       default:
         break;
     }
@@ -461,6 +419,14 @@ class MyScene extends THREE.Scene {
         }
         if(clickedObject.userData == this.simon && !this.compSimon){
           this.comprobarSimon(clickedObject);
+        }
+        if(clickedObject == this.train.getObjectByName("boton") || clickedObject == this.train.getObjectByName("inter")
+          || clickedObject == this.train.getObjectByName("bola")){
+            if(this.animar_tren){
+              this.animar_tren = false;
+            }else {
+              this.animar_tren = true;
+            }
         }
         if(clickedObject.userData){
           clickedObject.userData.use(clickedObject);

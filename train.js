@@ -260,6 +260,37 @@ class Train extends THREE.Object3D {
         sujecc4.position.set(440, 420, 450);
         this.add(sujecc4);
 
+        var intGeom = new THREE.BoxGeometry(40, 5, 20);
+        var botGeom = new THREE.BoxGeometry(5, 60, 5);
+        var bolaGeom = new THREE.SphereGeometry(10, 32, 32);
+        intGeom.translate(0, 2.5, 0);
+        botGeom.translate(0, 30, 0);
+        bolaGeom.translate(0, 60, 0);
+        var mat = new THREE.MeshBasicMaterial({color: 0x000000});
+        var mat2 = new THREE.MeshPhongMaterial({color: 0xffffff});
+        this.interruptor = new THREE.Mesh(intGeom, mat);
+        this.boton = new THREE.Mesh(botGeom, mat2);
+        this.bola = new THREE.Mesh(bolaGeom, mat2);
+        this.interruptor.translateX(180);
+        this.interruptor.translateZ(390);
+        this.boton.translateX(180);
+        this.boton.translateZ(390);
+        this.bola.translateX(180);
+        this.bola.translateZ(390);
+        this.boton.rotateZ(-Math.PI/4);
+        this.bola.rotateZ(-Math.PI/4);
+        this.add(this.boton);
+        this.add(this.interruptor);
+        this.add(this.bola);
+        this.boton.userData = this;
+        this.boton.name = "boton";
+        this.bola.userData = this;
+        this.bola.name = "bola";
+        this.interruptor.name = "inter";
+        this.interruptor.userData = this;
+        this.encendido = false;
+
+
         }
         update(){
             TWEEN.update();
@@ -271,7 +302,38 @@ class Train extends THREE.Object3D {
             this.movimiento4.start();
         }
         use(mesh){
-            mesh.userData.remove(mesh);
+            if(mesh == this.pieza){
+                mesh.userData.remove(mesh);
+            }else{
+                if(this.encendido){
+                    let origin = this.boton.rotation;
+                    let destino = this.boton.rotateZ(-2*Math.PI/4);
+                    let movimiento = new TWEEN.Tween(origin).to(destino,300)
+                    .onUpdate(() =>{
+                    }).start();
+                    origin = this.bola.rotation;
+                    destino = this.bola.rotateZ(-2*Math.PI/4);
+                    let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
+                    .onUpdate(() =>{
+                    }).start();
+                    TWEEN.update();
+                    this.encendido = false;
+                }else{
+                    let origin = this.boton.rotation;
+                    let destino = this.boton.rotateZ(2*Math.PI/4);
+                    let movimiento = new TWEEN.Tween(origin).to(destino,300)
+                    .onUpdate(() =>{
+                    }).start();
+                    origin = this.bola.rotation;
+                    destino = this.bola.rotateZ(2*Math.PI/4);
+                    let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
+                    .onUpdate(() =>{
+
+                    }).start();
+                    TWEEN.update();
+                    this.encendido = true;
+                }
+            }
         }
     }
     export { Train };

@@ -67,8 +67,10 @@ class Ventilador extends THREE.Object3D {
     if(this.encendido){
       let origin = this.boton.rotation;
       let destino = this.boton.rotateZ(-2*Math.PI/4);
-      let movimiento = new TWEEN.Tween(origin).to(destino,300)
+      this.boton.rotateZ(2*Math.PI/4);
+      let movimiento = new TWEEN.Tween(origin).to(destino,100)
       .onUpdate(() =>{
+        this.boton.rotateZ(-2*Math.PI/100);
       }).start();
       TWEEN.update();
       this.spotLight.intensity = 0;
@@ -76,8 +78,10 @@ class Ventilador extends THREE.Object3D {
     }else{
       let origin = this.boton.rotation;
       let destino = this.boton.rotateZ(2*Math.PI/4);
-      let movimiento = new TWEEN.Tween(origin).to(destino,300)
+      this.boton.rotateZ(-2*Math.PI/4);
+      let movimiento = new TWEEN.Tween(origin).to(destino,100)
       .onUpdate(() =>{
+        this.boton.rotateZ(2*Math.PI/100);
       }).start();
       TWEEN.update();
       this.spotLight.intensity = 0.4;

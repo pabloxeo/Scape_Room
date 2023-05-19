@@ -308,27 +308,34 @@ class Train extends THREE.Object3D {
                 if(this.encendido){
                     let origin = this.boton.rotation;
                     let destino = this.boton.rotateZ(-2*Math.PI/4);
+                    this.boton.rotateZ(2*Math.PI/4);
                     let movimiento = new TWEEN.Tween(origin).to(destino,300)
                     .onUpdate(() =>{
+                        this.boton.rotateZ(-2*Math.PI/300);
                     }).start();
                     origin = this.bola.rotation;
                     destino = this.bola.rotateZ(-2*Math.PI/4);
+                    this.bola.rotateZ(2*Math.PI/4);
                     let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
                     .onUpdate(() =>{
+                        this.bola.rotateZ(-2*Math.PI/300);
                     }).start();
                     TWEEN.update();
                     this.encendido = false;
                 }else{
                     let origin = this.boton.rotation;
                     let destino = this.boton.rotateZ(2*Math.PI/4);
+                    this.boton.rotateZ(-2*Math.PI/4);
                     let movimiento = new TWEEN.Tween(origin).to(destino,300)
                     .onUpdate(() =>{
+                        this.boton.rotateZ(2*Math.PI/300);
                     }).start();
                     origin = this.bola.rotation;
                     destino = this.bola.rotateZ(2*Math.PI/4);
+                    this.bola.rotateZ(-2*Math.PI/4);
                     let movimiento2 = new TWEEN.Tween(origin).to(destino,300)
                     .onUpdate(() =>{
-
+                        this.bola.rotateZ(2*Math.PI/300);
                     }).start();
                     TWEEN.update();
                     this.encendido = true;

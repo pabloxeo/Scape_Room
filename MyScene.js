@@ -215,8 +215,15 @@ class MyScene extends THREE.Scene {
     
     // El material se hará con una textura de madera
     var texture = new THREE.TextureLoader().load('../imgs/suelo.jpg');
-    var materialGround = new THREE.MeshPhongMaterial ({map: texture});
-    
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(4, 4);
+    var texture2 = new THREE.TextureLoader().load('../imgs/suelo-modified.jpg');
+    texture2.wrapS = THREE.RepeatWrapping;  
+    texture2.wrapT = THREE.RepeatWrapping;
+    texture2.repeat.set(4, 4);
+
+    var materialGround = new THREE.MeshPhongMaterial ({map: texture, bumpMap: texture2, bumpScale: 10});
     // Ya se puede construir el Mesh
     var ground = new THREE.Mesh (geometryGround, materialGround);
     
@@ -439,19 +446,19 @@ class MyScene extends THREE.Scene {
     if(boton == this.simon.getObjectByName("rojo") && !this.pRojo && !this.pAzul && !this.pAmar && !this.pVerde){
       this.pRojo = true;
     }else if(boton == this.simon.getObjectByName("rojo")){
-      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      this.pRojo = this.pVerde = this.pAmar = this.pAzul = false;
       boton.userData.error();
     }
     if(boton == this.simon.getObjectByName("amar") && this.pRojo && !this.pVerde && !this.pAzul && !this.pAmar){
       this.pAmar = true;
     }else if(boton == this.simon.getObjectByName("amar")){
-      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      this.pRojo = this.pVerde = this.pAmar = this.pAzul = false;
       boton.userData.error();
     }
     if(boton == this.simon.getObjectByName("azul") && this.pAmar && !this.pAzul && !this.pVerde){
       this.pAzul = true;
     }else if(boton == this.simon.getObjectByName("azul")){
-      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      this.pRojo = this.pVerde = this.pAmar = this.pAzul = false;
       boton.userData.error();
     }
     if(boton == this.simon.getObjectByName("verde") && this.pAzul){
@@ -459,7 +466,7 @@ class MyScene extends THREE.Scene {
       this.compSimon = true;
       boton.userData.complete();
     }else if(boton == this.simon.getObjectByName("verde")){
-      this.pRojo = this.pVerde = this.pAmar = this.pVerde = false;
+      this.pRojo = this.pVerde = this.pAmar = this.pAzul = false;
       boton.userData.error();
     }
 

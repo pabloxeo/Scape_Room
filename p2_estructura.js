@@ -11,8 +11,9 @@ class Estructura extends THREE.Object3D {
     var muroGeometry = new THREE.BoxGeometry( 1000, 500, 20);
     
     var textureWall = new THREE.TextureLoader().load('../imgs/wall.jpg');
+    var texture2Wall = new THREE.TextureLoader().load('../imgs/wall-modified.jpg');
     var textureTecho = new THREE.TextureLoader().load('../imgs/techo.png');
-    var muroMaterial = new THREE.MeshPhongMaterial ({map: textureWall});
+    var muroMaterial = new THREE.MeshPhongMaterial ({map: textureWall, bumpMap: texture2Wall, bumpScale: 10});
     var techoMaterial = new THREE.MeshPhongMaterial ({map: textureTecho});
     var muro1 = new THREE.Mesh( muroGeometry, muroMaterial);
     muro1.name = "muro1";

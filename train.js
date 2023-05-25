@@ -260,17 +260,17 @@ class Train extends THREE.Object3D {
         sujecc4.position.set(440, 420, 450);
         this.add(sujecc4);
 
+        var bolaGeom = new THREE.SphereGeometry(10, 32, 32);
         var intGeom = new THREE.BoxGeometry(40, 5, 20);
         var botGeom = new THREE.BoxGeometry(5, 60, 5);
-        var bolaGeom = new THREE.SphereGeometry(10, 32, 32);
         intGeom.translate(0, 2.5, 0);
         botGeom.translate(0, 30, 0);
         bolaGeom.translate(0, 60, 0);
         var mat = new THREE.MeshBasicMaterial({color: 0x000000});
         var mat2 = new THREE.MeshPhongMaterial({color: 0xffffff});
         this.interruptor = new THREE.Mesh(intGeom, mat);
-        this.boton = new THREE.Mesh(botGeom, mat2);
         this.bola = new THREE.Mesh(bolaGeom, mat2);
+        this.boton = new THREE.Mesh(botGeom, mat2);
         this.interruptor.translateX(180);
         this.interruptor.translateZ(390);
         this.boton.translateX(180);

@@ -293,7 +293,6 @@ class Simon extends THREE.Object3D{
         let destino = new THREE.Vector3(origin.x, origin.y-10, origin.z);
         let movimiento = new TWEEN.Tween(origin).to(destino,300)
         .onUpdate(() =>{
-            this.mesh_caja_verde.position.y-=0.01;
         }).start();
         origin = this.mesh_caja_verde.position;
         destino = new THREE.Vector3(origin.x, origin.y, origin.z);

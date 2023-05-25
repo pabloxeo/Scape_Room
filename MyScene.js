@@ -27,6 +27,7 @@ class MyScene extends THREE.Scene {
     super();
     this.pieza1 = false;
     this.pieza2 = false;
+    this.llave = false;
 
     this.compSimon = false;
     this.pickable = [];
@@ -70,7 +71,11 @@ class MyScene extends THREE.Scene {
     boxWall3.setFromObject(this.muro.getObjectByName("muro3"));
     var boxWall4 = new THREE.Box3();
     boxWall4.setFromObject(this.muro.getObjectByName("muro4"));
-    this.candidates.push(boxWall1, boxWall2, boxWall3, boxWall4);
+    var boxPuerta = new THREE.Box3();
+    boxPuerta.setFromObject(this.muro.getObjectByName("puerta"));
+    this.pickable.push(this.muro.getObjectByName("pomo1"));
+    this.pickable.push(this.muro.getObjectByName("pomo2"));
+    this.candidates.push(boxWall1, boxWall2, boxWall3, boxWall4, boxPuerta);
     this.add(this.muro);
 
     this.ventana = new Ventana();
@@ -435,7 +440,10 @@ class MyScene extends THREE.Scene {
               this.animar_tren = true;
             }
         }
-        if(clickedObject.userData){
+        if(clickedObject.userData && clickedObject.userData != this.muro){
+          clickedObject.userData.use(clickedObject);
+        }
+        if(clickedObject.userData == this.muro && this.llave){
           clickedObject.userData.use(clickedObject);
         }
       }

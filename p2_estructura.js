@@ -1,6 +1,6 @@
 import * as THREE from './libs/three.module.js'
 import { CSG } from './libs/CSG-v2.js'
-
+import  *  as TWEEN from '../libs/tween.esm.js'
  
 class Estructura extends THREE.Object3D {
   constructor() {
@@ -85,8 +85,58 @@ class Estructura extends THREE.Object3D {
     
     this.add(exWall2);
     
+    var puertaGeometry = new THREE.BoxGeometry( 200, 400, 10);
+    puertaGeometry.translate(-120 ,100, 0);
+    puertaGeometry.rotateY(Math.PI/2);
+    var texturePuerta = new THREE.TextureLoader().load('../imgs/wood.jpg');
+    var puertaMat = new THREE.MeshPhongMaterial({map: texturePuerta});
+    var mat= new THREE.MeshPhongMaterial({color: 0xffffff});
+    this.puerta = new THREE.Mesh( puertaGeometry, puertaMat);
+    this.puerta.geometry.computeBoundingBox();
+    this.puerta.name = "puerta";
+    this.puerta.translateX(500);
+    this.puerta.translateZ(-120);
+  
+    var bolaGeom = new THREE.SphereGeometry(10, 32, 32);
+    var botGeom = new THREE.BoxGeometry(5, 10, 5);
+      
+    botGeom.rotateZ(Math.PI/2);
+    botGeom.translate(-8, 130, 200);
+    bolaGeom.translate(-20, 130, 200);
+
+
+    this.boton = new THREE.Mesh(botGeom, mat);
+    this.boton.name = "pomo1";
+    this.boton.userData = this;
+    this.bola = new THREE.Mesh(bolaGeom, mat);
+    this.bola.name = "pomo2";
+    this.bola.userData = this;
+    this.bola.translateX(500);  
+    this.bola.translateZ(-120);
+    this.boton.translateX(500);
+    this.boton.translateZ(-120);
+    this.add(this.boton, this.bola);
+    this.add(this.puerta);
+    this.cerrada = true;
   }
   
+  use(mesh){
+    if(this.cerrada){
+      let origin = this.puerta.rotation;
+      let destino = this.puerta.rotateY(-Math.PI);
+      this.puerta.rotateY(Math.PI);
+      let movimiento = new TWEEN.Tween(origin).to(destino,2000)
+          .onUpdate(() =>{
+              this.puerta.rotateY(-Math.PI/1000);
+              this.boton.rotateY(-Math.PI/1000);
+              this.bola.rotateY(-Math.PI/1000);
+          }).start();
+      this.cerrada = false;
+      TWEEN.update();
+      }
+  }
+  
+
   update () {
   
   }

@@ -15,6 +15,12 @@ class Cama extends THREE.Object3D {
             objectLoader.setMaterials(materials);
             objectLoader.load('../models/cama/cama.obj',
                 (object) => {
+                  this.traverse(function(node){
+                    if(node.isMesh){
+                      node.castShadow = true;
+                      node.receiveShadow = true;
+                    }
+                  });
                   object.scale.set(2.5, 2.5, 2.5);
                   object.rotateY(Math.PI/2);
                   object.rotateX(-Math.PI/2);
@@ -25,12 +31,6 @@ class Cama extends THREE.Object3D {
                   this.add(object);
                 }, null, null);
          });
-    this.traverse(function(node){
-      if(node.isMesh){
-        node.castShadow = true;
-        node.receiveShadow = true;
-      }
-    });
     
     
 

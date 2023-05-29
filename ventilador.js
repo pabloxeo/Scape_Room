@@ -55,9 +55,9 @@ class Ventilador extends THREE.Object3D {
     this.boton.name = "boton";
     this.interruptor.name = "inter";
     this.interruptor.userData = this;
-    this.encendido = false;
+    this.encendido = true;
 
-    this.spotLight = new THREE.PointLight( 0xffffff, 0, 2000 );
+    this.spotLight = new THREE.PointLight( 0xffffff, 0.4, 2000 );
     this.spotLight.position.set( 0, 440, 0 );
     this.add (this.spotLight);
     this.spotLight.castShadow = true;
@@ -66,22 +66,23 @@ class Ventilador extends THREE.Object3D {
   use(mesh){
     if(this.encendido){
       let origin = this.boton.rotation;
-      let destino = this.boton.rotateZ(-2*Math.PI/4);
-      this.boton.rotateZ(2*Math.PI/4);
-      let movimiento = new TWEEN.Tween(origin).to(destino,100)
-      .onUpdate(() =>{
-        this.boton.rotateZ(-2*Math.PI/100);
-      }).start();
-      TWEEN.update();
-      this.spotLight.intensity = 0;
-      this.encendido = false;
-    }else{
-      let origin = this.boton.rotation;
       let destino = this.boton.rotateZ(2*Math.PI/4);
       this.boton.rotateZ(-2*Math.PI/4);
       let movimiento = new TWEEN.Tween(origin).to(destino,100)
       .onUpdate(() =>{
         this.boton.rotateZ(2*Math.PI/100);
+      }).start();
+      TWEEN.update();
+      this.spotLight.intensity = 0;
+      this.encendido = false;
+      
+    }else{
+      let origin = this.boton.rotation;
+      let destino = this.boton.rotateZ(-2*Math.PI/4);
+      this.boton.rotateZ(2*Math.PI/4);
+      let movimiento = new TWEEN.Tween(origin).to(destino,100)
+      .onUpdate(() =>{
+        this.boton.rotateZ(-2*Math.PI/100);
       }).start();
       TWEEN.update();
       this.spotLight.intensity = 0.4;

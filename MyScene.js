@@ -17,6 +17,8 @@ import { Aspas } from './aspas.js'
 import { Armario } from './armario.js'
 import { Mesa } from './mesa.js'
 import { Simon } from './simon_dice.js'
+import { CajaF } from './cajaF.js'
+import { Carrusel } from './carrusel.js'
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
@@ -25,6 +27,7 @@ import { Simon } from './simon_dice.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
+    this.clock = new THREE.Clock();
     this.pieza1 = false;
     this.pieza2 = false;
     this.llave = false;
@@ -61,6 +64,14 @@ class MyScene extends THREE.Scene {
 
     this.axis = new THREE.AxesHelper(5);
     this.add (this.axis);
+
+    this.carrusel = new Carrusel();
+    this.add(this.carrusel);
+
+    this.cajaf = new CajaF();
+    this.pickable.push(this.cajaf.getObjectByName("puertaC"));
+    this.pickable.push(this.cajaf.getObjectByName("llave"));
+    this.add(this.cajaf);
     
     this.muro = new Estructura();
     var boxWall1 = new THREE.Box3();
@@ -339,6 +350,8 @@ class MyScene extends THREE.Scene {
     this.body.position.set(this.camera.position.x, this.camera.position.y/2, this.camera.position.z);
     this.aspas.update();
     this.train.update();
+    
+    this.carrusel.update();
     if(this.animar_tren)
       this.train.repeat();
       
@@ -423,10 +436,10 @@ class MyScene extends THREE.Scene {
     if(pickedObjects.length > 0 ){
       if(pickedObjects[0].distance < 200){
         var clickedObject = pickedObjects[0].object;
-        if(clickedObject.userData == this.train){
+        if(clickedObject == this.train.getObjectByName("pieza1")){
           this.pieza1 = true;
         }
-        if(clickedObject.userData == this.simon){
+        if(clickedObject == this.simon.getObjectByName("pieza2")){
           this.pieza2 = true;
         }
         if(clickedObject.userData == this.simon && !this.compSimon){
@@ -440,11 +453,17 @@ class MyScene extends THREE.Scene {
               this.animar_tren = true;
             }
         }
-        if(clickedObject.userData && clickedObject.userData != this.muro){
+        if(clickedObject.userData && clickedObject.userData != this.muro && clickedObject.userData != this.cajaf){
           clickedObject.userData.use(clickedObject);
         }
         if(clickedObject.userData == this.muro && this.llave){
           clickedObject.userData.use(clickedObject);
+        }
+        if(clickedObject.userData == this.cajaf && this.pieza1 && this.pieza2){
+          clickedObject.userData.use(clickedObject);
+          if(clickedObject == this.cajaf.getObjectByName("llave")){
+            this.llave = true;
+          }
         }
       }
     }

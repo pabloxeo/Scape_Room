@@ -27,7 +27,6 @@ import { Carrusel } from './carrusel.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
-    this.clock = new THREE.Clock();
     this.pieza1 = false;
     this.pieza2 = false;
     this.llave = false;

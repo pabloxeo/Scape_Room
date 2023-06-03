@@ -73,21 +73,36 @@ class Estructura extends THREE.Object3D {
     this.add(muro2m);
 
     //Muros exterior
-    var exteriorGeometry = new THREE.BoxGeometry( 20, 960, 800);
-    var textureExterior = new THREE.TextureLoader().load('../imgs/ventana.jpg');
-    var exteriorMat = new THREE.MeshPhongMaterial ({map: textureExterior,
-    emissive: 0xffffff,
-    emissiveIntensity: 0.2});
+
+    this.video = document.createElement('video');
+    this.video.crossOrigin='anonymous';
+    this.video.preload='';
+    this.video.loop='true';
+    this.video.src='../imgs/texturaVideo.mp4';
+    this.video.load();
+    var texture = new THREE.VideoTexture(this.video);
+    texture.generateMipmaps=false;//sielvídeonoescuadrado
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBAFormat;
+    var exteriorMat = new THREE.MeshPhongMaterial ({map: texture});
+
+    var exteriorGeometry = new THREE.BoxGeometry( 200, 400, 10);
+    exteriorGeometry.translate(-120 ,100, 0);
+    exteriorGeometry.rotateY(Math.PI/2);
     var exWall2 = new THREE.Mesh( exteriorGeometry, exteriorMat);
-    exWall2.rotateY(Math.PI/2);
-    exWall2.translateX(600);
-    exWall2.translateY(200);
+    exWall2.translateX(500);
+    exWall2.translateZ(-120);
     
+    //exWall2.translateZ(-380);
+    this.video.play();
     this.add(exWall2);
     
     var puertaGeometry = new THREE.BoxGeometry( 200, 400, 10);
     puertaGeometry.translate(-120 ,100, 0);
     puertaGeometry.rotateY(Math.PI/2);
+    
+
     var texturePuerta = new THREE.TextureLoader().load('../imgs/wood.jpg');
     var puertaMat = new THREE.MeshPhongMaterial({map: texturePuerta});
     var mat= new THREE.MeshPhongMaterial({color: 0xffffff});

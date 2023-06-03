@@ -11,7 +11,8 @@ class Ventilador extends THREE.Object3D {
     var material = new THREE.MeshPhongMaterial({color: 0xffffff});
     const material2 = new THREE.MeshBasicMaterial( {
       color: 0xffffff,
-      reflectivity: 1
+      transparent: true,
+      opacity:0.4
     } );
     var baseV = new THREE.Mesh (baseVGeom, material);
     baseV.translateY(495);

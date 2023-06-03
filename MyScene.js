@@ -518,7 +518,16 @@ $(function () {
   // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
   var scene = new MyScene("#WebGL-output");
 
-  // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
+  var path="../imgs/fondo/";
+  var format='.png';
+  var urls=[
+  path+'px'+format,path+'nx'+format,
+  path+'py'+format,path+'ny'+format,
+  path+'pz'+format,path+'nz'+format
+  ];
+  var textureCube = new THREE.CubeTextureLoader().load(urls);
+  scene.background = textureCube;
+//Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
   window.addEventListener ("keydown", (event) => scene.onKeyDown(event));
   window.addEventListener ("keyup", (event) => scene.onKeyUp(event));

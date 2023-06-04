@@ -27,6 +27,7 @@ import { Carrusel } from './carrusel.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
+    this.pause = false;
     this.pieza1 = false;
     this.pieza2 = false;
     this.llave = false;
@@ -354,7 +355,7 @@ class MyScene extends THREE.Scene {
     if(this.animar_tren)
       this.train.repeat();
       
-      this.updatePositionForCamera();
+    this.updatePositionForCamera();
      //Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
     
@@ -425,6 +426,8 @@ class MyScene extends THREE.Scene {
     }
   }
   onClick(event){
+    if(!this.pause)
+      this.cameraControl.lock();
     this.mouse.x  = window.innerWidth/2;
     this.mouse.y = window.innerHeight/2
     this.mouse.x = (this.mouse.x / window.innerWidth) * 2 - 1;

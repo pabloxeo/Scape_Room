@@ -1,6 +1,7 @@
 import * as THREE from '../libs/three.module.js'
 import { CSG } from './libs/CSG-v2.js'; 
 import  *  as TWEEN from '../libs/tween.esm.js'
+import { Mesh } from './libs/three.module.js';
 class Train extends THREE.Object3D {
     
     constructor() {
@@ -184,6 +185,7 @@ class Train extends THREE.Object3D {
                                                 new THREE.Vector3(250, 10, 450),
                                                 new THREE.Vector3(225, 2, 450),
                                                 new THREE.Vector3(220, 2, 450),]);
+                                                
                                                            
         points = spline.getPoints(1000);
 
@@ -244,6 +246,17 @@ class Train extends THREE.Object3D {
             aux.lookAt(point.clone().add(tangent));
             this.add(aux);
         }
+
+        //Hacer el camino con extrudePath
+        /*
+        var shape = new THREE.Shape ();
+        shape.moveTo(-15,0);
+        shape.lineTo(15,0);
+        var options = {bevelSize: 2, steps:2000,curveSegments:2000,extrudePath:spline2};
+        var geometry= new THREE.ExtrudeGeometry(shape,options);
+        var path = new Mesh(geometry, mat);
+        this.add(path);
+        */
 
         var sujGeom = new THREE.CylinderGeometry(2, 2, 160, 20);
         var sujecc = new THREE.Mesh(sujGeom, mat);

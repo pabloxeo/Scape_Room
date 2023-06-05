@@ -91,7 +91,6 @@ class Train extends THREE.Object3D {
         this.add(v2Mesh);
         this.add(v3Mesh);
 
-        let points = [];
         
         var origen = {t:0};
         var destino = {t:1};
@@ -185,17 +184,11 @@ class Train extends THREE.Object3D {
                                                 new THREE.Vector3(250, 10, 450),
                                                 new THREE.Vector3(225, 2, 450),
                                                 new THREE.Vector3(220, 2, 450),]);
-                                                
-                                                           
-        points = spline.getPoints(1000);
-
-        var geometryLine = new THREE.BufferGeometry();
-        geometryLine.setFromPoints(spline.getPoints(20000));                                
+          
+                          
 
         var mat = new THREE.LineBasicMaterial({color: 0x000000});
 
-        var visibleSpline = new THREE.Line(geometryLine, mat);
-        //this.add(visibleSpline);
         
         this.movimiento = new TWEEN.Tween(origen).to(destino,30000)
         .onUpdate(() =>{

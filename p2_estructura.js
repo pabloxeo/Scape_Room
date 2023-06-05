@@ -95,7 +95,6 @@ class Estructura extends THREE.Object3D {
     exWall2.translateZ(-120);
     
     //exWall2.translateZ(-380);
-    this.video.play();
     this.add(exWall2);
     
     var puertaGeometry = new THREE.BoxGeometry( 200, 400, 10);
@@ -147,6 +146,7 @@ class Estructura extends THREE.Object3D {
               this.bola.rotateY(-Math.PI/1000);
           }).start();
       this.cerrada = false;
+      this.video.play();
       TWEEN.update();
       }
   }

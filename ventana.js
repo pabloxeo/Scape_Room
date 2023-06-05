@@ -4,28 +4,13 @@ import * as THREE from '../libs/three.module.js'
 class Ventana extends THREE.Object3D {
   constructor() {
     super();
-    
-    let imgTexture = new THREE.TextureLoader().load( '../imgs/moon_1024.jpg' );
-				imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
-				imgTexture.colorSpace = THREE.SRGBColorSpace;
-				imgTexture.anisotropy = 16;
-				imgTexture = null;
-
     var glassMaterial = new THREE.MeshPhysicalMaterial({
-        map: imgTexture,
-        //roughness: 0,
-        //transmission: 1,
-        //reflectivity: 1,
-        //thickness: 1,
-      // transmission: .95,
         color: 0xffffff,
         metalness: 0,
         roughness: 0,
         ior: 1.52,
         transmission: 1,
         specularIntensity: 1,
-        opacity: 1,
-        reflectivity: 1,
         clearcoat: 1,
       });
   
